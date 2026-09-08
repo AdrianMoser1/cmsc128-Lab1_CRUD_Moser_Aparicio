@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo Aoi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER  -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✓</span>
+      <h1>Todo Aoi</h1>
+    </div>
+    <button id="openAddTaskBtn" class="btn btn-primary" type="button">
+      + Add task
+    </button>
+  </header>
+
+  <!-- DASHBOARD  -->
+  <main class="dashboard">
+
+    <!-- Summary: quick peeks, gives the dashboard something to report in the surface-->
+    <section class="summary-strip" aria-label="Task Overview">
+      <div class="summary-stat">
+        <span class="summary-number" id="statTotal">0</span>
+        <span class="summary-label">total</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-number" id="statHigh">0</span>
+        <span class="summary-label">high priority</span>  
+        <span class="summary-label">medium priority</span>  
+        <span class="summary-label">low priority</span>  
+      </div>
+      <div class="summary-stat">
+        <span class="summary-number" id="statOverdue">0</span>
+        <span class="summary-label">Overdue</span>
+      </div>
+    </section>
+
+    <!--
+    Filter: lets the user narrow the list by tag without leaving the dashboard
+    for scalability purposes
+    -->
+    <section class="filter-row" aria-label="Filter tasks">
+      <label for="filterTag" class="filter-label">Show:</label>
+      <select id="filterTag" class="filter-select">
+        <option value="All">All tasks</option>
+        <option value="School">School</option>
+        <option value="Personal">Personal</option>
+        <option value="Others">Others</option>
+      </select>
+
+      <label for="sortBy" class="filter-label">Sort by:</label>
+      <select id="sortBy" class="filter-select">
+        <option value="due">Due date</option>
+        <option value="priority">Priority</option>
+        <option value="created">Date added</option>
+      </select>
+    </section>
+
+    <!-- Task list target:(TBI) script.js renders <article class="task-card"> items in here -->
+    <section class="task-list" id="taskList" aria-label="Tasks">
+      <!-- Empty state shown by default; (TBI)JS hides this once tasks exist -->
+      <div class="empty-state" id="emptyState">
+        <p class="empty-title">Nothing on the to-do list yet.</p>
+        <p class="empty-sub">Add your first task to get started.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ ADD TASK DIALOG ============ -->
+  <!-- Uses the native <dialog> element: gives free focus-trapping(overlaying). -->
+  <dialog id="taskDialog" class="task-dialog">
+    <form id="taskForm" method="dialog" novalidate>
+      <h2 id="dialogTitle">Add task</h2>
+
+      <div class="field">
+        <label for="titleInput">Title</label>
+        <input type="text" id="titleInput" name="title" maxlength="80" required
+               placeholder="e.g. Finish CMSC 128 lab report">
+        <p class="field-error" id="titleError" role="alert"></p>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="dateInput">Due date</label>
+          <input type="date" id="dateInput" name="date" required>
+        </div>
+        <div class="field">
+          <label for="timeInput">Due time</label>
+          <input type="time" id="timeInput" name="time" required>
+        </div>
+      </div>
+      <p class="field-error" id="dateError" role="alert"></p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="priorityInput">Priority</label>
+          <select id="priorityInput" name="priority">
+            <option value="Low">Low</option>
+            <option value="Med" selected>Med</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tagInput">Tag</label>
+          <select id="tagInput" name="tag">
+            <option value="School">School</option>
+            <option value="Personal">Personal</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ DELETE CONFIRMATION DIALOG ============ -->
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <p>Delete this task? This can't be undone.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" id="confirmCancelBtn">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
