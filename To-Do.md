@@ -1,7 +1,4 @@
 Tasks:
-+ Dashboard Logic
-+ Add Task Logic
-- Title, due date and time added,  priority, tag/category
 + Edit Task Logic
 + Delete Task Logic
 + Mark Task as Done Logic
@@ -17,6 +14,9 @@ Tasks:
 + Filter and Sort Logic
 + Filter and Sort UI
 
-
+In progress:
++ Dashboard Logic(only in html)
++ Add Task Logic(only in html)
+- Title, due date and time added,  priority, tag/category(only in html)
 
 Done:
