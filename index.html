@@ -25,6 +25,7 @@
   <!-- DASHBOARD  -->
   <main class="dashboard">
 
+<<<<<<< Updated upstream
     <!-- Summary: quick peeks, gives the dashboard something to report in the surface-->
     <section class="summary-strip" aria-label="Task Overview">
       <div class="summary-stat">
@@ -59,22 +60,59 @@
         <option value="School">School</option>
         <option value="Personal">Personal</option>
         <option value="Others">Others</option>
+=======
+    <section class="filter-row" aria-label="Task view options">
+      <label class="filter-label" for="filterTag">Tag:</label>
+      <select class="filter-select" id="filterTag">
+        <option value="All">All</option>
+        <option value="School">School</option>
+        <option value="Personal">Personal</option>
+        <option value="Others">Others</option>
+      </select>
+
+      <label class="filter-label" for="filterPriority">Priority:</label>
+      <select class="filter-select" id="filterPriority">
+        <option value="All">All</option>
+        <option value="Low">Low</option>
+        <option value="Med">Med</option>
+        <option value="High">High</option>
+>>>>>>> Stashed changes
       </select>
 
       <label for="sortBy" class="filter-label">Sort by:</label>
       <select id="sortBy" class="filter-select">
         <option value="due">Due date</option>
         <option value="priority">Priority</option>
+<<<<<<< Updated upstream
         <option value="created">Date added</option>
       </select>
+=======
+        <option value="dueDate">Due date</option>
+        <option value="createdAt">Date added</option>
+        <option value="tag">Tag</option>
+      </select>
+
+      <label class="completed-toggle" for="showCompleted">
+        <input type="checkbox" id="showCompleted">
+        <span class="completed-toggle-mark" aria-hidden="true">✓</span>
+        <span>Show completed</span>
+      </label>
+
+      <button class="btn btn-primary" id="addTaskBtn" type="button">+ Add Task</button>
+>>>>>>> Stashed changes
     </section>
 
     <!-- Task list target:(TBI) script.js renders <article class="task-card"> items in here -->
     <section class="task-list" id="taskList" aria-label="Tasks">
+<<<<<<< Updated upstream
       <!-- Empty state shown by default; (TBI)JS hides this once a task exists -->
       <div class="empty-state" id="emptyState">
         <p class="empty-title">Nothing on the to-do list yet.</p>
         <p class="empty-sub">Click "+Add Task" to get started.</p>
+=======
+      <div class="empty-state" id="emptyState">
+        <p class="empty-title">Create a task using the "+ Add Task"</p>
+>>>>>>> Stashed changes
       </div>
     </section>
 
