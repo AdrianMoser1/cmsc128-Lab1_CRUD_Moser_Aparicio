@@ -104,6 +104,31 @@ body {
 }
 .btn-danger:hover { background: #FBEDE7; }
 
+.undo-dialog {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--paper-raised);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(33, 38, 45, 0.2);
+  font-size: 13px;
+}
+
+.undo-dialog .btn-ghost {
+  flex: 0 0 auto;
+  color: var(--paper-raised);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.undo-dialog .btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
+
 /*
    Dashboard
   */
