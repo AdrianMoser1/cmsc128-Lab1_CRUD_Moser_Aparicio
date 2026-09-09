@@ -1,8 +1,6 @@
-import { get_client_id } from "../dependencies/db_connection.js";
-
 export function open_task_popup(Task = null) {
 	let TaskDialog = document.getElementById("task-dialog");
-    const uid = Task ? Task.uid : get_client_id();
+    const uid = Task?.uid || "";
     TaskDialog.taskToEdit = Task;
     const today = new Date();
     const formatted_date = today.toISOString().split('T')[0];
