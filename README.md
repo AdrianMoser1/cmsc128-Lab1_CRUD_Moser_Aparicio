@@ -29,3 +29,8 @@ is mediated by `undo.js` before going through with `delete_task.js`.
 **Filter/Sort**
 ![task popup](images/CompletedTaskVisible.png)
 **Completed Tasks**
+
++ How to launch:
+"Open with live server" in VS Code
+Add tasks however you like, click to edit an existing task, delete to delete an existing task then confirm.
+You must be connected with the internet!
