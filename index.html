@@ -11,39 +11,56 @@
 </head>
 <body>
 
-  <header>
-    <h1>Todo Aoi</h1>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✓</span>
+      <h1>Todo Aoi</h1>
+    </div>
   </header>
 
-  <main>
+  <main class="dashboard">
 
-    <section aria-label="Filter tasks">
-      <label for="filterPriority">Priority:</label>
-      <select id="filterPriority">
-        <option value="All">All</option>
-        <option value="Low">Low</option>
-        <option value="Med">Med</option>
-        <option value="High">High</option>
-      </select>
-
-      <label for="filterTag">Tag:</label>
-      <select id="filterTag">
+    <section class="filter-row" aria-label="Task view options">
+      <label class="filter-label" for="filterTag">Show:</label>
+      <select class="filter-select" id="filterTag">
         <option value="All">All</option>
         <option value="School">School</option>
         <option value="Personal">Personal</option>
-        <option value="Others">Others</option>
+        <option value="Other">Other</option>
       </select>
 
-      <button id="addTaskBtn" type="button">+ Add task</button>
+      <label class="filter-label" for="sortTasks">Sort by:</label>
+      <select class="filter-select" id="sortTasks">
+        <option value="priority">Priority</option>
+        <option value="dueDate">Due date</option>
+        <option value="createdAt">Date created</option>
+      </select>
+
+      <label class="completed-toggle" for="showCompleted">
+        <input type="checkbox" id="showCompleted">
+        <span class="completed-toggle-mark" aria-hidden="true">✓</span>
+        <span>Show completed</span>
+      </label>
+
+      <button class="btn btn-primary" id="addTaskBtn" type="button">+ Add task</button>
     </section>
 
-    <section id="taskList" aria-label="Tasks">
-      <small>Click existing tasks to edit.</small>
+    <section class="summary-strip" id="taskTally" aria-label="Task tally"></section>
+
+    <section class="task-list" id="taskList" aria-label="Tasks">
+      <small class="task-list-hint">Click existing tasks to edit.</small>
+      <div class="empty-state" id="emptyState">
+        <p class="empty-title">You have no tasks yet!</p>
+        <p class="empty-sub">
+          Click here to make one
+          <button class="btn btn-primary" id="emptyAddTaskBtn" type="button">Add Task</button>
+        </p>
+      </div>
       <!-- script.js renders task items in here -->
     </section>
 
     <section id="task-dialog-sec">
-      <dialog id="task-dialog"></dialog>
+      <dialog class="task-dialog" id="task-dialog"></dialog>
     </section>
 
   </main>
