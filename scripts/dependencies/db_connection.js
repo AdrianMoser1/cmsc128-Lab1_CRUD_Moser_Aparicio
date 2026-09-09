@@ -1,14 +1,25 @@
 const SupabaseUrl = "https://nsehnepbiqpwnxmosxvq.supabase.co";
 const SupabaseKey = "sb_publishable_DULbfqw0xns8j7OTgJT5og_NwnFEYpq";
 const ClientIdKey = "todo_aoi_client_id";
+let MemoryClientId = null;
 
 export function get_client_id() {
-	let ClientId = localStorage.getItem(ClientIdKey);
-	if (!ClientId) {
-		ClientId = crypto.randomUUID();
-		localStorage.setItem(ClientIdKey, ClientId);
+	try {
+		let ClientId = localStorage.getItem(ClientIdKey);
+		if (!ClientId) {
+			ClientId = create_client_id();
+			localStorage.setItem(ClientIdKey, ClientId);
+		}
+		return ClientId;
+	} catch {
+		if (!MemoryClientId) MemoryClientId = create_client_id();
+		return MemoryClientId;
 	}
-	return ClientId;
+}
+
+function create_client_id() {
+	if (typeof crypto?.randomUUID === "function") return crypto.randomUUID();
+	return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 export async function supabase_request(Path, Options = {}) {
