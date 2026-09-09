@@ -1,6 +1,7 @@
 import { open_task_popup } from "./task_popup.js";
 import { create_task_shortview } from "./task_shortview.js";
 import { refresh_task_view } from "./task_tally.js";
+import { insert_task, update_task } from "../dependencies/db_fetch.js";
 
 function create_task_from_form(FormData) {
 	return {
@@ -23,21 +24,29 @@ export function setup_add_task() {
 	EmptyAddTaskButton.addEventListener("click", () => open_task_popup());
 	
     // listens to any form submit action but filters it to the dialog ## see task_popup.js
-	document.addEventListener("submit", (Event) => {
+	document.addEventListener("submit", async (Event) => {
 		if (Event.target.id !== "taskForm") return;
 		const Task = create_task_from_form(new FormData(Event.target));
 		const TaskDialog = document.getElementById("task-dialog");
 		const PreviousTask = TaskDialog.taskToEdit;
 
-		if (PreviousTask) {
-			Task.shortview = PreviousTask.shortview;
-			PreviousTask.shortview.replaceWith(create_task_shortview(Task));
-		} else {
+		try {
+			const SavedTask = PreviousTask
+				? await update_task({ ...Task, id: PreviousTask.id, uid: PreviousTask.uid })
+				: await insert_task(Task);
 			const TaskList = document.getElementById("taskList");
-			document.getElementById("emptyState")?.remove();
-			TaskList.appendChild(create_task_shortview(Task));
+			if (PreviousTask) {
+				SavedTask.shortview = PreviousTask.shortview;
+				PreviousTask.shortview.replaceWith(create_task_shortview(SavedTask));
+			} else {
+				document.getElementById("emptyState")?.remove();
+				TaskList.appendChild(create_task_shortview(SavedTask));
+			}
+			refresh_task_view();
+		} catch (Error) {
+			console.error(Error);
+			alert(`The task could not be saved.\n\n${Error.message}`);
 		}
-		refresh_task_view();
 
 		TaskDialog.taskToEdit = null;
 	});

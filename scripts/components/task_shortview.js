@@ -1,11 +1,13 @@
 import { open_task_popup } from "./task_popup.js";
 import { delete_task } from "./delete_task.js";
 import { render_task_tally } from "./task_tally.js";
+import { update_task } from "../dependencies/db_fetch.js";
 
 export function create_task_shortview(Task) {
 	const TaskCard = document.createElement("article");
 	const Tag = normalize_tag(Task.tag);
 	const CreatedAt = Task.created_at || Task.start_date || "";
+	const CreatedAtLabel = format_created_at(CreatedAt);
 	TaskCard.className = "task-card";
 	TaskCard.tabIndex = 0;
 	TaskCard.setAttribute("role", "button");
@@ -24,7 +26,7 @@ export function create_task_shortview(Task) {
 				<span class="task-due">${escape_html(Task.due_date || "No due date")}</span>
 				<span class="badge">${escape_html(Task.priority || "Med")}</span>
 				<span class="badge badge-tag">${escape_html(Tag)}</span>
-				<span class="task-created">Created on: ${escape_html(CreatedAt || "No date")}</span>
+				<span class="task-created">Created on: ${escape_html(CreatedAtLabel || "No date")}</span>
 			</div>
 		</div>
 		<div class="task-actions">
@@ -33,15 +35,28 @@ export function create_task_shortview(Task) {
 	`;
 
 	TaskCard.addEventListener("click", () => open_task_popup(Task));
-	TaskCard.querySelector(".task-check").addEventListener("click", (Event) => {
+	TaskCard.querySelector(".task-check").addEventListener("click", async (Event) => {
 		Event.stopPropagation();
+		const PreviousCompleted = Task.completed;
 		Task.completed = !Task.completed;
 		TaskCard.dataset.completed = Task.completed ? "true" : "false";
 		TaskCard.classList.toggle("is-completed", Task.completed);
 		TaskCard.hidden = Task.completed && !document.getElementById("showCompleted")?.checked;
 		Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
 		Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
-		render_task_tally();
+		try {
+			await update_task(Task);
+			render_task_tally();
+		} catch (Error) {
+			console.error(Error);
+			Task.completed = PreviousCompleted;
+			TaskCard.dataset.completed = Task.completed ? "true" : "false";
+			TaskCard.classList.toggle("is-completed", Task.completed);
+			TaskCard.hidden = false;
+			Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
+			Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
+			alert(`The task could not be updated.\n\n${Error.message}`);
+		}
 	});
 	TaskCard.querySelector(".delete-btn").addEventListener("click", (Event) => {
 		Event.stopPropagation();
@@ -53,6 +68,21 @@ export function create_task_shortview(Task) {
 
 function normalize_tag(Tag) {
 	return Tag === "Others" ? "Other" : Tag || "Other";
+}
+
+function format_created_at(Value) {
+	if (!Value) return "";
+
+	const DateValue = new Date(Value);
+	if (Number.isNaN(DateValue.getTime())) return Value;
+
+	const HasTime = Value.includes("T") || Value.includes(":");
+	return new Intl.DateTimeFormat(undefined, {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+		...(HasTime ? { hour: "numeric", minute: "2-digit", hour12: true } : {})
+	}).format(DateValue);
 }
 
 function escape_html(Value) {
