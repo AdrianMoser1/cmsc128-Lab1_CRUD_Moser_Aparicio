@@ -32,10 +32,16 @@
         <span class="summary-label">total</span>
       </div>
       <div class="summary-stat">
-        <span class="summary-number" id="statHigh">0</span>
+        <span class="summary-number" id="statHigh" cent>0</span>
         <span class="summary-label">high priority</span>  
-        <span class="summary-label">medium priority</span>  
-        <span class="summary-label">low priority</span>  
+      </div>
+      <div class="summary-stat">
+        <span class="summary-number" id="statMed">0</span>
+        <span class="summary-label">medium   priority</span>  
+      </div>
+      <div class="summary-stat">
+        <span class="summary-number" id="statLow">0</span>
+        <span class="summary-label">low priority</span>
       </div>
       <div class="summary-stat">
         <span class="summary-number" id="statOverdue">0</span>
@@ -44,8 +50,7 @@
     </section>
 
     <!--
-    Filter: lets the user narrow the list by tag without leaving the dashboard
-    for scalability purposes
+    Filter row: select which tasks to show and how to sort them. JS listens for changes and re-renders the task list accordingly.
     -->
     <section class="filter-row" aria-label="Filter tasks">
       <label for="filterTag" class="filter-label">Show:</label>
@@ -66,23 +71,23 @@
 
     <!-- Task list target:(TBI) script.js renders <article class="task-card"> items in here -->
     <section class="task-list" id="taskList" aria-label="Tasks">
-      <!-- Empty state shown by default; (TBI)JS hides this once tasks exist -->
+      <!-- Empty state shown by default; (TBI)JS hides this once a task exists -->
       <div class="empty-state" id="emptyState">
         <p class="empty-title">Nothing on the to-do list yet.</p>
-        <p class="empty-sub">Add your first task to get started.</p>
+        <p class="empty-sub">Click "+Add Task" to get started.</p>
       </div>
     </section>
 
   </main>
 
-  <!-- ============ ADD TASK DIALOG ============ -->
-  <!-- Uses the native <dialog> element: gives free focus-trapping(overlaying). -->
+  <!-- ADD TASK DIALOG  -->
+  <
   <dialog id="taskDialog" class="task-dialog">
     <form id="taskForm" method="dialog" novalidate>
       <h2 id="dialogTitle">Add task</h2>
 
       <div class="field">
-        <label for="titleInput">Title</label>
+        <label for="titleInput">Task name</label>
         <input type="text" id="titleInput" name="title" maxlength="80" required
                placeholder="e.g. Finish CMSC 128 lab report">
         <p class="field-error" id="titleError" role="alert"></p>
@@ -134,7 +139,8 @@
       <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
     </div>
   </dialog>
-
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+ 
   <script src="script.js"></script>
 </body>
 </html>
