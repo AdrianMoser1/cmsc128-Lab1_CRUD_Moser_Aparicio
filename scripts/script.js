@@ -18,6 +18,6 @@ async function load_tasks() {
 		refresh_task_view();
 	} catch (Error) {
 		console.error(Error);
-		alert("Tasks could not be loaded. Check your Supabase connection and table setup.");
+		alert("Tasks could not be loaded. Check your connection to the Internet");
 	}
 }
