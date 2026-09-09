@@ -113,18 +113,77 @@ body {
   padding: 28px 24px 80px;
 }
 
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-row #addTaskBtn {
+  margin-left: auto;
+}
+
+.filter-label {
+  margin: 0;
+}
+
+.filter-select {
+  width: auto;
+}
+
+.completed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.completed-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.completed-toggle-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--pri-low);
+  border-radius: 50%;
+  color: transparent;
+  background: #EAF3E8;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.completed-toggle:hover .completed-toggle-mark {
+  background: #DDEEDB;
+}
+
+.completed-toggle input:checked + .completed-toggle-mark {
+  color: var(--accent-ink);
+  background: var(--pri-low);
+}
+
 .summary-strip {
   display: flex;
-  gap: 28px;
+  align-items: stretch;
+  gap: 24px;
   padding: 18px 22px;
-  justify-content: space-around;
+  justify-content: space-between;
   background: var(--paper-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   margin-bottom: 20px;
 }
 
-.summary-stat { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.summary-stat { display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 86px; }
 
 .summary-number {
   font-family: var(--font-display);
@@ -139,6 +198,43 @@ body {
   margin-top: 4px;
 }
 
+.summary-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.summary-group-label {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.summary-group-items {
+  display: flex;
+  gap: 12px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.summary-item-count {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.summary-item.low .summary-item-count { color: var(--pri-low); }
+.summary-item.med .summary-item-count { color: var(--pri-med); }
+.summary-item.high .summary-item-count { color: var(--pri-high); }
+
 /* 
    Task list + cards
  */
@@ -146,6 +242,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.task-list-hint {
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
 .task-card {
@@ -156,9 +257,72 @@ body {
   background: var(--paper-raised);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  cursor: pointer;
 }
 
+.task-card[hidden] { display: none; }
+
 .task-body { flex: 1; min-width: 0; }
+
+.task-check,
+.popup-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--pri-low);
+  border-radius: 50%;
+  background: #EAF3E8;
+  color: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.task-check:hover,
+.popup-check:hover {
+  border-color: #3D663F;
+  background: #DDEEDB;
+  color: transparent;
+}
+
+.task-card.is-completed .task-check,
+.popup-check input:checked + span {
+  border-color: var(--pri-low);
+  background: var(--pri-low);
+  color: var(--accent-ink);
+}
+
+.task-card.is-completed .task-title {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.popup-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.popup-title-row .popup-title { flex: 1; }
+
+.popup-check { position: relative; }
+.popup-check span {
+  position: absolute;
+  inset: -1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+.popup-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
 
 .task-title {
   font-size: 15px;
@@ -178,6 +342,12 @@ body {
 
 .task-due { display: inline-flex; align-items: center; gap: 4px; }
 .task-due.is-overdue { color: var(--danger); font-weight: 600; }
+
+.task-created {
+  color: var(--ink-soft);
+  font-size: 11.5px;
+  font-style: italic;
+}
 
 .badge {
   display: inline-block;
@@ -231,7 +401,10 @@ body {
   border: none;
   border-radius: 14px;
   padding: 26px 26px 22px;
-  width: min(420px, 90vw);
+  width: max(50vw, 420px);
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: auto;
   box-shadow: 0 20px 60px rgba(33, 38, 45, 0.25);
 }
 <<<<<<< Updated upstream:style.css
@@ -320,7 +493,8 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="time"],
-select {
+select,
+#taskTitle {
   font-family: var(--font-body);
   font-size: 14px;
   padding: 9px 10px;
@@ -328,6 +502,51 @@ select {
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
+}
+
+#taskDescription {
+  min-height: 240px;
+  resize: vertical;
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+#taskTitle:focus,
+#taskDescription:focus,
+.task-dialog input[type="date"]:focus,
+.task-dialog select:focus {
+  outline: 2px solid rgba(47, 111, 107, 0.25);
+  border-color: var(--accent);
+}
+
+.task-dialog button {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.task-dialog button[type="submit"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.task-dialog button[type="button"] {
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.task-dialog button:hover {
+  filter: brightness(0.97);
 }
 
 <<<<<<< Updated upstream:style.css
@@ -388,9 +607,20 @@ select {
 
 .dialog-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 8px;
   margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .task-dialog {
+    width: 90vw;
+    min-width: 0;
+  }
+
+  .popup-meta {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* 
