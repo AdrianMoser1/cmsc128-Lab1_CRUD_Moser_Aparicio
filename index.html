@@ -20,57 +20,41 @@
 
   <main class="dashboard">
 
-<<<<<<< Updated upstream
-    <!-- Summary: quick peeks, gives the dashboard something to report in the surface-->
-    <section class="summary-strip" aria-label="Task Overview">
-      <div class="summary-stat">
-        <span class="summary-number" id="statTotal">0</span>
-        <span class="summary-label">total</span>
-      </div>
-      <div class="summary-stat">
-        <span class="summary-number" id="statHigh" cent>0</span>
-        <span class="summary-label">high priority</span>  
-      </div>
-      <div class="summary-stat">
-        <span class="summary-number" id="statMed">0</span>
-        <span class="summary-label">medium   priority</span>  
-      </div>
-      <div class="summary-stat">
-        <span class="summary-number" id="statLow">0</span>
-        <span class="summary-label">low priority</span>
-      </div>
-      <div class="summary-stat">
-        <span class="summary-number" id="statOverdue">0</span>
-        <span class="summary-label">Overdue</span>
-      </div>
-    </section>
-
-    <!--
-    Filter row: select which tasks to show and how to sort them. JS listens for changes and re-renders the task list accordingly.
-    -->
-    <section class="filter-row" aria-label="Filter tasks">
-      <label for="filterTag" class="filter-label">Show:</label>
-      <select id="filterTag" class="filter-select">
-        <option value="All">All tasks</option>
+    <section class="filter-row" aria-label="Task view options">
+      <label class="filter-label" for="filterTag">Show:</label>
+      <select class="filter-select" id="filterTag">
+        <option value="All">All</option>
         <option value="School">School</option>
         <option value="Personal">Personal</option>
-        <option value="Others">Others</option>
+        <option value="Other">Other</option>
       </select>
 
       <label class="filter-label" for="sortTasks">Sort by:</label>
       <select class="filter-select" id="sortTasks">
         <option value="priority">Priority</option>
-        <option value="created">Date added</option>
+        <option value="dueDate">Due date</option>
+        <option value="createdAt">Date created</option>
       </select>
+
+      <label class="completed-toggle" for="showCompleted">
+        <input type="checkbox" id="showCompleted">
+        <span class="completed-toggle-mark" aria-hidden="true">✓</span>
+        <span>Show completed</span>
+      </label>
+
+      <button class="btn btn-primary" id="addTaskBtn" type="button">+ Add task</button>
     </section>
 
     <section class="summary-strip" id="taskTally" aria-label="Task tally"></section>
 
     <section class="task-list" id="taskList" aria-label="Tasks">
-      <!-- Empty state shown by default; (TBI)JS hides this once a task exists -->
+      <small class="task-list-hint">Click existing tasks to edit.</small>
       <div class="empty-state" id="emptyState">
-        <p class="empty-title">Nothing on the to-do list yet.</p>
-        <p class="empty-sub">Click "+Add Task" to get started.</p>
+        <p class="empty-title">You have no tasks yet!</p>
+        <p class="empty-sub">
+          Click here to make one
+          <button class="btn btn-primary" id="emptyAddTaskBtn" type="button">Add Task</button>
+        </p>
       </div>
       <!-- script.js renders task items in here -->
     </section>

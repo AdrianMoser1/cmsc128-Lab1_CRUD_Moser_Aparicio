@@ -23,11 +23,7 @@ export function open_task_popup(Task = null) {
                 </div>
                 <div class="popup-field">
                     <label for="dueDate">Due date</label>
-                    <input type="date" id="dueDate" name="due_date" value="${Task?.due_date || ""}" required>
-                </div>
-                <div class="popup-field">
-                    <label for="dueTime">Due time</label>
-                    <input type="time" id="dueTime" name="due_time" value="${Task?.due_time || ""}" required>
+                    <input type="date" id="dueDate" name="due_date" value="${Task?.due_date || ""}">
                 </div>
                 <div class="popup-field">
                     <label for="dueTime">Due time</label>
@@ -46,7 +42,7 @@ export function open_task_popup(Task = null) {
                     <select id="tag" name="tag">
                         <option value="School" ${!Task || Task.tag === "School" ? "selected" : ""}>School</option>
                         <option value="Personal" ${Task?.tag === "Personal" ? "selected" : ""}>Personal</option>
-                        <option value="Others" ${!Task || Task.tag === "Other" || Task.tag === "Others" ? "selected" : ""}>Others</option>
+                        <option value="Other" ${!Task || Task.tag === "Other" || Task.tag === "Others" ? "selected" : ""}>Other</option>
                     </select>
                 </div>
             </div>
@@ -58,7 +54,7 @@ export function open_task_popup(Task = null) {
 
             <div class="dialog-actions">
                 <button type="button" id="cancelTaskBtn">Cancel</button>
-                <button type="submit">${Task ? "Apply Edits" : "Add Task"}</button>
+                <button type="submit">${Task ? "Apply Edits" : "Add task"}</button>
             </div>
         </form>
     `;
