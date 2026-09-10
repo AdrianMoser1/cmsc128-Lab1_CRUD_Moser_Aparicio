@@ -1,7 +1,7 @@
 import { refresh_task_view } from "./task_tally.js";
 import { remove_task } from "../dependencies/db_fetch.js";
 
-const DELETE_DELAY = 5000;
+const DELETE_DELAY = 10000;
 
 export function delete_task(Task) {
 	if (!Task?.shortview) return;
@@ -53,7 +53,7 @@ function create_undo_dialog(TaskTitle) {
 	UndoDialog.className = "undo-dialog";
 	UndoDialog.setAttribute("role", "status");
 	UndoDialog.innerHTML = `
-		<span>"${escape_html(TaskTitle)}" will be deleted in <strong class="undo-countdown">5s</strong>.</span>
+		<span>"${escape_html(TaskTitle)}" will be deleted in <strong class="undo-countdown">10s</strong>.</span>
 		<button class="btn btn-ghost undo-delete-btn" type="button">Undo</button>
 	`;
 	document.body.appendChild(UndoDialog);
