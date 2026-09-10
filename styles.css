@@ -8,6 +8,7 @@
   --accent:       #2F6F6B;
   --accent-ink:   #FFFFFF;
   --danger:       #B3492B;
+  --success:      #4C7A4E;
 
   /* Priority semantics */
   --pri-low:    #4C7A4E;
@@ -104,6 +105,41 @@ body {
 }
 .btn-danger:hover { background: #FBEDE7; }
 
+<<<<<<< Updated upstream
+=======
+.btn-danger-solid {
+  background: var(--danger) !important;
+  color: var(--accent-ink) !important;
+  border-color: var(--danger) !important;
+}
+.btn-danger-solid:hover { background: #9A3D22 !important; }
+
+.undo-dialog {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: var(--ink);
+  color: var(--paper-raised);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(33, 38, 45, 0.2);
+  font-size: 13px;
+}
+
+.undo-dialog .btn-ghost {
+  flex: 0 0 auto;
+  color: var(--paper-raised);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.undo-dialog .btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
+
+>>>>>>> Stashed changes
 /*
    Dashboard
   */
@@ -181,6 +217,7 @@ body {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .summary-stat { display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 86px; }
@@ -260,12 +297,12 @@ body {
   cursor: pointer;
 }
 
-.task-card[hidden] { display: none; }
+.task-card[hidden] { display: none; }  /* Hide completed tasks when filtered */
 
-.task-body { flex: 1; min-width: 0; }
+.task-body { flex: 1; min-width: 0; } /* Allow text to wrap and truncate properly */
 
 .task-check,
-.popup-check {
+.popup-check {  /* Custom checkbox */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -298,6 +335,15 @@ body {
 .task-card.is-completed .task-title {
   color: var(--ink-soft);
   text-decoration: line-through;
+}
+
+.task-card.is-overdue {
+  background: #FBEDE7;
+  border: 1px solid var(--danger);
+}
+
+.task-card.is-overdue .task-title {
+  color: var(--danger);
 }
 
 .popup-title-row {
@@ -395,7 +441,7 @@ body {
 .empty-sub { font-size: 13px; margin: 0; }
 
 /* 
-   Add/Edit Task(TBI) dialog
+   Add/Edit Task dialog
 */
 .task-dialog {
   border: none;
@@ -430,7 +476,7 @@ body {
 }
 .popup-meta {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
 }
 .popup-field {
@@ -493,6 +539,7 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="time"],
+input[type="datetime-local"],
 select,
 #taskTitle {
   font-family: var(--font-body);
@@ -506,7 +553,7 @@ select,
 
 #taskDescription {
   min-height: 240px;
-  resize: vertical;
+  resize: none;
   font-family: var(--font-body);
   font-size: 14px;
   padding: 9px 10px;
@@ -519,6 +566,7 @@ select,
 #taskTitle:focus,
 #taskDescription:focus,
 .task-dialog input[type="date"]:focus,
+.task-dialog input[type="time"]:focus,
 .task-dialog select:focus {
   outline: 2px solid rgba(47, 111, 107, 0.25);
   border-color: var(--accent);
@@ -619,7 +667,7 @@ select,
   }
 
   .popup-meta {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -653,6 +701,9 @@ select,
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 20;
+  max-width: min(400px, calc(100vw - 32px));
+  text-align: center;
 }
 .toast.is-visible {
   opacity: 1;
@@ -661,6 +712,7 @@ select,
 }
 =======
 }
+<<<<<<< Updated upstream
 
 #taskDescription{
     resize: none
@@ -677,3 +729,7 @@ select,
   cursor: pointer;
 }
 >>>>>>> Stashed changes:styles.css
+=======
+.toast.is-success { background: var(--success); }
+.toast.is-error { background: var(--danger); }
+>>>>>>> Stashed changes
