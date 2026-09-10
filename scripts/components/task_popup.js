@@ -26,6 +26,10 @@ export function open_task_popup(Task = null) {
                     <input type="date" id="dueDate" name="due_date" value="${Task?.due_date || ""}">
                 </div>
                 <div class="popup-field">
+                    <label for="dueTime">Due time</label>
+                    <input type="time" id="dueTime" name="due_time" value="${Task?.due_time || ""}">
+                </div>
+                <div class="popup-field">
                     <label for="priority">Priority</label>
                     <select id="priority" name="priority">
                         <option value="Low" ${Task?.priority === "Low" ? "selected" : ""}>Low</option>
