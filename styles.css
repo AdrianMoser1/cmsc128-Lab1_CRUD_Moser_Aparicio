@@ -106,7 +106,10 @@ body {
 .btn-danger:hover { background: #FBEDE7; }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 .btn-danger-solid {
   background: var(--danger) !important;
   color: var(--accent-ink) !important;
@@ -710,6 +713,7 @@ select,
   transform: translate(-50%, 0);
 <<<<<<< Updated upstream:style.css
 }
+<<<<<<< Updated upstream
 =======
 }
 <<<<<<< Updated upstream
@@ -729,6 +733,10 @@ select,
   cursor: pointer;
 }
 >>>>>>> Stashed changes:styles.css
+=======
+.toast.is-success { background: var(--success); }
+.toast.is-error { background: var(--danger); }
+>>>>>>> Stashed changes
 =======
 .toast.is-success { background: var(--success); }
 .toast.is-error { background: var(--danger); }

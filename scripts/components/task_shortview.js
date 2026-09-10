@@ -22,7 +22,11 @@ export function create_task_shortview(Task) {
 	TaskCard.dataset.createdAt = CreatedAt;
 	TaskCard.dataset.completed = Task.completed ? "true" : "false";
 	TaskCard.classList.toggle("is-completed", Boolean(Task.completed));
+<<<<<<< Updated upstream
 	TaskCard.classList.toggle("is-overdue", IsOverdue);
+=======
+	TaskCard.classList.toggle("is-overdue", is_task_overdue(Task));
+>>>>>>> Stashed changes
 	Task.shortview = TaskCard;
 	TaskCard.innerHTML = `
 		<button type="button" class="task-check" aria-label="${Task.completed ? "Mark task incomplete" : "Mark task complete"}" aria-pressed="${Boolean(Task.completed)}">✓</button>
@@ -51,7 +55,11 @@ export function create_task_shortview(Task) {
 		Task.completed = !Task.completed;
 		TaskCard.dataset.completed = Task.completed ? "true" : "false";
 		TaskCard.classList.toggle("is-completed", Task.completed);
+<<<<<<< Updated upstream
 		TaskCard.classList.toggle("is-overdue", is_overdue(Task));
+=======
+		TaskCard.classList.toggle("is-overdue", is_task_overdue(Task));
+>>>>>>> Stashed changes
 		TaskCard.hidden = Task.completed && !document.getElementById("showCompleted")?.checked;
 		Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
 		Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
@@ -63,7 +71,11 @@ export function create_task_shortview(Task) {
 			Task.completed = PreviousCompleted;
 			TaskCard.dataset.completed = Task.completed ? "true" : "false";
 			TaskCard.classList.toggle("is-completed", Task.completed);
+<<<<<<< Updated upstream
 			TaskCard.classList.toggle("is-overdue", is_overdue(Task));
+=======
+			TaskCard.classList.toggle("is-overdue", is_task_overdue(Task));
+>>>>>>> Stashed changes
 			TaskCard.hidden = false;
 			Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
 			Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
@@ -114,6 +126,23 @@ function format_created_at(Value) {
 	}).format(DateValue);
 }
 
+<<<<<<< Updated upstream
+=======
+function format_due(DateValue, TimeValue) {
+	if (!DateValue && !TimeValue) return "No due date";
+	if (!DateValue) return `Due at ${TimeValue}`;
+	if (!TimeValue) return DateValue;
+	return `${DateValue} at ${TimeValue}`;
+}
+
+function is_task_overdue(Task) {
+	if (Task.completed || !Task.due_date) return false;
+
+	const DueValue = new Date(`${Task.due_date}T${Task.due_time || "23:59:59"}`);
+	return !Number.isNaN(DueValue.getTime()) && DueValue < new Date();
+}
+
+>>>>>>> Stashed changes
 function escape_html(Value) {
 	const Element = document.createElement("span");
 	Element.textContent = Value;
