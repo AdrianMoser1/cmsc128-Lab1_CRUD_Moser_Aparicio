@@ -80,6 +80,10 @@ function format_created_at(Value) {
 	if (Number.isNaN(DateValue.getTime())) return Value;
 
 	const HasTime = Value.includes("T") || Value.includes(":");
+	return format_local_date(DateValue, HasTime);
+}
+
+function format_local_date(DateValue, HasTime) {
 	return new Intl.DateTimeFormat(undefined, {
 		month: "short",
 		day: "numeric",
@@ -90,9 +94,21 @@ function format_created_at(Value) {
 
 function format_due(DateValue, TimeValue) {
 	if (!DateValue && !TimeValue) return "No due date";
-	if (!DateValue) return `Due at ${TimeValue}`;
-	if (!TimeValue) return DateValue;
-	return `${DateValue} at ${TimeValue}`;
+	if (!DateValue) return `Due at ${format_time(TimeValue)}`;
+
+	const DueDate = new Date(`${DateValue}T${TimeValue || "00:00"}`);
+	if (Number.isNaN(DueDate.getTime())) return `${DateValue}${TimeValue ? ` at ${TimeValue}` : ""}`;
+	return format_local_date(DueDate, Boolean(TimeValue));
+}
+
+function format_time(Value) {
+	const TimeValue = new Date(`1970-01-01T${Value}`);
+	if (Number.isNaN(TimeValue.getTime())) return Value;
+	return new Intl.DateTimeFormat(undefined, {
+		hour: "numeric",
+		minute: "2-digit",
+		hour12: true
+	}).format(TimeValue);
 }
 
 function is_overdue(Task) {
