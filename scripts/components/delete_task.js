@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import { refresh_task_view } from "./task_tally.js";
 import { remove_task } from "../dependencies/db_fetch.js";
 
@@ -86,4 +84,3 @@ function escape_html(Value) {
 	Element.textContent = Value;
 	return Element.innerHTML;
 }
->>>>>>> Stashed changes

@@ -36,7 +36,8 @@ function task_to_row(Task) {
 		completed: Boolean(Task.completed),
 		priority: (Task.priority || "Med").toLowerCase(),
 		tag: normalize_tag(Task.tag).toLowerCase(),
-		due_date: Task.due_date || null
+		due_date: Task.due_date || null,
+		due_time: Task.due_time || null
 	};
 }
 
@@ -49,6 +50,7 @@ function row_to_task(Row) {
 		start_date: Row.created_at?.slice(0, 10) || "",
 		created_at: Row.created_at,
 		due_date: Row.due_date || "",
+		due_time: Row.due_time || "",
 		priority: capitalize(Row.priority),
 		tag: capitalize(Row.tag),
 		completed: Boolean(Row.completed)

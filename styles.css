@@ -105,11 +105,6 @@ body {
 }
 .btn-danger:hover { background: #FBEDE7; }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 .btn-danger-solid {
   background: var(--danger) !important;
   color: var(--accent-ink) !important;
@@ -142,7 +137,6 @@ body {
 
 .undo-dialog .btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
 
->>>>>>> Stashed changes
 /*
    Dashboard
   */
@@ -456,8 +450,6 @@ body {
   overflow: auto;
   box-shadow: 0 20px 60px rgba(33, 38, 45, 0.25);
 }
-<<<<<<< Updated upstream:style.css
-=======
 .task-dialog form {
   display: flex;
   flex-direction: column;
@@ -512,7 +504,6 @@ body {
 .popup-description textarea {
   width: 100%;
 }
->>>>>>> Stashed changes:styles.css
 .task-dialog::backdrop {
   background: rgba(33, 38, 45, 0.45);
 }
@@ -600,8 +591,6 @@ select,
   filter: brightness(0.97);
 }
 
-<<<<<<< Updated upstream:style.css
-=======
 #taskDescription {
   min-height: 240px;
   resize: vertical;
@@ -648,7 +637,6 @@ select,
   filter: brightness(0.97);
 }
 
->>>>>>> Stashed changes:styles.css
 .field-error {
   color: var(--danger);
   font-size: 12px;
@@ -711,12 +699,6 @@ select,
 .toast.is-visible {
   opacity: 1;
   transform: translate(-50%, 0);
-<<<<<<< Updated upstream:style.css
-}
-<<<<<<< Updated upstream
-=======
-}
-<<<<<<< Updated upstream
 
 #taskDescription{
     resize: none
@@ -732,12 +714,6 @@ select,
   text-decoration: underline;
   cursor: pointer;
 }
->>>>>>> Stashed changes:styles.css
-=======
+
 .toast.is-success { background: var(--success); }
 .toast.is-error { background: var(--danger); }
->>>>>>> Stashed changes
-=======
-.toast.is-success { background: var(--success); }
-.toast.is-error { background: var(--danger); }
->>>>>>> Stashed changes
