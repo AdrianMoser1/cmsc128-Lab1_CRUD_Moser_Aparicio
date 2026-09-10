@@ -21,8 +21,8 @@ export function setup_add_task() {
 	const AddTaskButton = document.getElementById("addTaskBtn");
 	const EmptyAddTaskButton = document.getElementById("emptyAddTaskBtn");
 
-	AddTaskButton?.addEventListener("click", () => open_task_popup());
-	EmptyAddTaskButton?.addEventListener("click", () => open_task_popup());
+	AddTaskButton.addEventListener("click", () => open_task_popup());
+	EmptyAddTaskButton.addEventListener("click", () => open_task_popup());
 	
     // listens to any form submit action but filters it to the dialog ## see task_popup.js
 	document.addEventListener("submit", async (Event) => {
