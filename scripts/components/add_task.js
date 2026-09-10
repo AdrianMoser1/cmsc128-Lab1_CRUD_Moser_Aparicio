@@ -10,6 +10,7 @@ function create_task_from_form(FormData) {
 		description: FormData.get("description").trim(),
 		start_date: FormData.get("start_date"),
 		due_date: FormData.get("due_date"),
+		due_time: FormData.get("due_time"),
 		priority: FormData.get("priority"),
 		tag: FormData.get("tag"),
 		completed: FormData.get("completed") === "on"

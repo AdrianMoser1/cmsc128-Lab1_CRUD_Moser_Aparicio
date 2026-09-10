@@ -23,7 +23,7 @@ export function create_task_shortview(Task) {
 		<div class="task-body">
 			<p class="task-title">${escape_html(Task.title)}</p>
 			<div class="task-meta">
-				<span class="task-due">${escape_html(Task.due_date || "No due date")}</span>
+				<span class="task-due">${escape_html(format_due(Task.due_date, Task.due_time))}</span>
 				<span class="badge">${escape_html(Task.priority || "Med")}</span>
 				<span class="badge badge-tag">${escape_html(Tag)}</span>
 				<span class="task-created">Created on: ${escape_html(CreatedAtLabel || "No date")}</span>
@@ -83,6 +83,13 @@ function format_created_at(Value) {
 		year: "numeric",
 		...(HasTime ? { hour: "numeric", minute: "2-digit", hour12: true } : {})
 	}).format(DateValue);
+}
+
+function format_due(DateValue, TimeValue) {
+	if (!DateValue && !TimeValue) return "No due date";
+	if (!DateValue) return `Due at ${TimeValue}`;
+	if (!TimeValue) return DateValue;
+	return `${DateValue} at ${TimeValue}`;
 }
 
 function escape_html(Value) {
