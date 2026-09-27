@@ -515,7 +515,7 @@ body {
   margin: 0 0 18px;
 }
 
-.field { display: flex; flex-direction: column; margin-bottom: 14px; }
+.field { display: flex; flex-direction: column; margin-bottom: 10px; }
 
 .field-row {
   display: flex;
@@ -656,3 +656,71 @@ select,
 }
 .toast.is-success { background: var(--success); }
 .toast.is-error { background: var(--danger); }
+
+/*
+   Auth pages (Sign Up / Login / Profile)
+   Reuses existing tokens (--paper-raised, --accent, --line, etc.) so these pages
+   feel native to the app instead of introducing a second visual language.
+*/
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 26px;
+}
+
+.auth-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card .btn {
+  margin-top: 6px;
+}
+
+.auth-card .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.field-success {
+  color: var(--success);
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+.auth-switch {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}

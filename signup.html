@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - Todo Aoi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✓</span>
+      <h1>Todo Aoi</h1>
+    </div>
+  </header>
+
+  <main class="dashboard auth-page">
+    <section class="auth-card" aria-label="Create an account">
+      <h2><i class="fa fa-user" style="font-size: 40px;" aria-hidden="true"></i><span>Create your account</span></h2>
+
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="displayName">Display name</label>
+          <input type="text" id="displayName" name="display_name" placeholder="Raul" required>
+        </div>
+
+        <div class="field">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" name="email" placeholder="raul@gmail.com" required>
+        </div>
+
+        <div class="field">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" name="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
+        </div>
+
+        <p class="field-error" id="signupError" role="alert" hidden></p>
+        <p class="field-success" id="signupSuccess" role="status" hidden></p>
+
+        <button class="btn btn-primary" type="submit">Sign Up</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { setup_signup_form } from "./scripts/components/signup_form.js";
+    setup_signup_form();
+  </script>
+</body>
+</html>
