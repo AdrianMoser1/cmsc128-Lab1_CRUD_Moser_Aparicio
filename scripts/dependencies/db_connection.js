@@ -1,5 +1,6 @@
-const SupabaseUrl = "https://nsehnepbiqpwnxmosxvq.supabase.co";
-const SupabaseKey = "sb_publishable_DULbfqw0xns8j7OTgJT5og_NwnFEYpq";
+//export rather than just const so other modules(auth_connection.js) can reuse the exact key without duplication of copy
+export const SupabaseUrl = "https://nsehnepbiqpwnxmosxvq.supabase.co";
+export const SupabaseKey = "sb_publishable_DULbfqw0xns8j7OTgJT5og_NwnFEYpq";
 const ClientIdKey = "todo_aoi_client_id";
 let MemoryClientId = null;
 
