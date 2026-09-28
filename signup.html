@@ -55,7 +55,9 @@
   </main>
 
   <script type="module">
+    import { redirect_if_authenticated } from "./scripts/dependencies/auth_connection.js";
     import { setup_signup_form } from "./scripts/components/signup_form.js";
+    // Guest-only page: if a session already exists, skip the form entirely.
     setup_signup_form();
   </script>
 </body>
