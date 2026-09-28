@@ -39,5 +39,14 @@ export async function require_auth_or_redirect(LoginPage = "login.html") {
 		window.location.replace(LoginPage);
 		return null;
 	}
+	//    Signing out in another tab (or the token becoming unrefreshable) shoots SIGNED_OUT
+	//    here, so this tab boots the user out instead of continuing to show the protected UI.
+	supabase.auth.onAuthStateChange((Event) => {
+		if (Event === "SIGNED_OUT") window.location.replace(LoginPage);
+	});
+	window.addEventListener("pageshow", async (Event) => {
+		if (!Event.persisted) return;
+		if (!(await get_current_session())) window.location.replace(LoginPage);
+	});
 	return Session;
 }
