@@ -36,12 +36,22 @@
 
         <div class="field">
           <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" name="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
+          <div class="password-field">
+            <input type="password" id="signupPassword" name="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Show password" title="Show password">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
 
         <div class="field">
           <label for="confirmPassword">Confirm password</label>
-          <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
+          <div class="password-field">
+            <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Show password" title="Show password">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
 
         <p class="field-error" id="signupError" role="alert" hidden></p>
@@ -56,9 +66,12 @@
   <script type="module">
     import { redirect_if_authenticated } from "../scripts/dependencies/auth_connection.js";
     import { setup_signup_form } from "../scripts/components/signup_form.js";
+    import { setup_password_toggle } from "../scripts/components/password_toggle.js";
+
     // Guest-only page: if a session already exists, skip the form entirely.
     redirect_if_authenticated();
     setup_signup_form();
+    setup_password_toggle();
   </script>
 </body>
 </html>

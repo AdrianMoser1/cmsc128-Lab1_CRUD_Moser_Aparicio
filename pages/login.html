@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -30,8 +31,13 @@
 
         <div class="field">
           <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" name="password" placeholder="Your password" required autocomplete="current-password">
-                    <a class="auth-inline-link" href="forgot-password.html">Forgot password?</a>
+          <div class="password-field">
+            <input type="password" id="loginPassword" name="password" placeholder="Your password" required autocomplete="current-password">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Show password" title="Show password">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          <a class="auth-inline-link" href="forgot-password.html">Forgot password?</a>
         </div>
 
         <p class="field-error" id="loginError" role="alert" hidden></p>
@@ -47,11 +53,11 @@
   <script type="module">
     import { redirect_if_authenticated } from "../scripts/dependencies/auth_connection.js";
     import { setup_login_form } from "../scripts/components/login_form.js";
+    import { setup_password_toggle } from "../scripts/components/password_toggle.js";
 
     // Guest-only page: if a session already exists, skip the form entirely.
     redirect_if_authenticated();
     setup_login_form();
-
     // reset-password.html redirects here with ?reset=success once a password reset is
     // confirmed, so the user gets explicit feedback that their new password is now live --
     // rather than silently landing back on an unremarkable login form.
@@ -60,6 +66,7 @@
       SuccessBox.textContent = "Your password has been reset. Please log in with your new password.";
       SuccessBox.hidden = false;
     }
+    setup_password_toggle();
   </script>
 </body>
 </html>
