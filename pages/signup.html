@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 
@@ -45,7 +45,6 @@
         </div>
 
         <p class="field-error" id="signupError" role="alert" hidden></p>
-        <p class="field-success" id="signupSuccess" role="status" hidden></p>
 
         <button class="btn btn-primary" type="submit">Sign Up</button>
       </form>
@@ -55,9 +54,10 @@
   </main>
 
   <script type="module">
-    import { redirect_if_authenticated } from "./scripts/dependencies/auth_connection.js";
-    import { setup_signup_form } from "./scripts/components/signup_form.js";
+    import { redirect_if_authenticated } from "../scripts/dependencies/auth_connection.js";
+    import { setup_signup_form } from "../scripts/components/signup_form.js";
     // Guest-only page: if a session already exists, skip the form entirely.
+    redirect_if_authenticated();
     setup_signup_form();
   </script>
 </body>

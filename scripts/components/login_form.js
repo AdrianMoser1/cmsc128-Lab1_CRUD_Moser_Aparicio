@@ -18,11 +18,12 @@ import { supabase, POST_LOGIN_PAGE } from "../dependencies/auth_connection.js";
 export function setup_login_form() {
 	const Form = document.getElementById("loginForm");
 	const ErrorBox = document.getElementById("loginError");
+	const SuccessBox = document.getElementById("loginSuccess");
 	const SubmitButton = Form.querySelector("button[type='submit']");
 
 	Form.addEventListener("submit", async (Event) => {
 		Event.preventDefault(); // handle submission ourselves so errors show inline without a page reload
-		hide_error(ErrorBox);
+		clear_feedback(ErrorBox, SuccessBox);
 
 		const Fields = new FormData(Form);
 		const Email = Fields.get("email").trim();
@@ -58,6 +59,7 @@ export function setup_login_form() {
 			set_loading(SubmitButton, false);
 		}
 	});
+
 }
 
 // Maps Supabase's error into a message the user can act on.
@@ -87,6 +89,12 @@ function show_error(ErrorBox, Message) {
 	ErrorBox.hidden = false;
 }
 
-function hide_error(ErrorBox) {
+function show_success(SuccessBox, Message) {
+	SuccessBox.textContent = Message;
+	SuccessBox.hidden = false;
+}
+
+function clear_feedback(ErrorBox, SuccessBox) {
 	ErrorBox.hidden = true;
+	SuccessBox.hidden = true;
 }

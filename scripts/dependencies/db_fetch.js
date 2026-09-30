@@ -1,7 +1,8 @@
-import { supabase_request } from "./db_connection.js";
+import { get_client_id, supabase_request } from "./db_connection.js";
 
 export async function fetch_tasks() {
-	const Rows = await supabase_request("tasks?select=*&order=created_at.asc");
+	const ClientId = encodeURIComponent(get_client_id());
+	const Rows = await supabase_request(`tasks?select=*&client_id=eq.${ClientId}&order=created_at.asc`);
 	return Rows.map(row_to_task);
 }
 
@@ -15,7 +16,8 @@ export async function insert_task(Task) {
 
 export async function update_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const Rows = await supabase_request(`tasks?id=eq.${TaskId}`, {
+	const ClientId = encodeURIComponent(get_client_id());
+	const Rows = await supabase_request(`tasks?id=eq.${TaskId}&client_id=eq.${ClientId}`, {
 		method: "PATCH",
 		body: JSON.stringify(task_to_row(Task))
 	});
@@ -24,13 +26,15 @@ export async function update_task(Task) {
 
 export async function remove_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	await supabase_request(`tasks?id=eq.${TaskId}`, {
+	const ClientId = encodeURIComponent(get_client_id());
+	await supabase_request(`tasks?id=eq.${TaskId}&client_id=eq.${ClientId}`, {
 		method: "DELETE"
 	});
 }
 
 function task_to_row(Task) {
 	return {
+		client_id: get_client_id(),
 		title: Task.title,
 		description: Task.description || null,
 		completed: Boolean(Task.completed),

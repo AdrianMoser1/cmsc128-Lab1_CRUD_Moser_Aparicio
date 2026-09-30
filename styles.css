@@ -70,6 +70,17 @@ body {
   letter-spacing: 0.2px;
 }
 
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-greeting {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
 /* 
    Buttons
  */
@@ -82,6 +93,11 @@ body {
   border: 1px solid transparent;
   cursor: pointer;
   transition: transform 0.06s ease, background-color 0.15s ease;
+}
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 .btn:active { transform: translateY(1px); }
 
@@ -111,6 +127,20 @@ body {
   border-color: var(--danger) !important;
 }
 .btn-danger-solid:hover { background: #9A3D22 !important; }
+
+@media (max-width: 560px) {
+  .app-header {
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
+  .account-actions {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
 
 .undo-dialog {
   position: fixed;
@@ -693,6 +723,22 @@ select,
   flex-direction: column;
 }
 
+.account-field-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-field-control input {
+  min-width: 0;
+  flex: 1;
+}
+
+.change-field-btn {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+}
+
 .auth-card .btn {
   margin-top: 6px;
 }
@@ -700,6 +746,12 @@ select,
 .auth-card .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.confirmation-button {
+  display: block;
+  text-align: center;
+  text-decoration: none;
 }
 
 .field-success {
