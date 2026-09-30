@@ -1,55 +1,40 @@
-import { get_client_id, supabase_request } from "./db_connection.js";
-import { get_current_session } from "./auth_connection.js";
-
-async function get_account_id() {
-	const Session = await get_current_session();
-	if (!Session?.user?.id) throw new Error("You must be signed in to access tasks.");
-	return Session.user.id;
-}
+import { get_user_id, supabase_request } from "./db_connection.js";
 
 export async function fetch_tasks() {
-	const AccountId = await get_account_id();
-	const LegacyClientId = get_client_id();
-	if (LegacyClientId !== AccountId) {
-		await supabase_request(`tasks?client_id=eq.${encodeURIComponent(LegacyClientId)}`, {
-			method: "PATCH",
-			body: JSON.stringify({ client_id: AccountId })
-		});
-	}
-	const Rows = await supabase_request(`tasks?select=*&client_id=eq.${encodeURIComponent(AccountId)}&order=created_at.asc`);
+	const ClientId = encodeURIComponent(get_user_id());
+	const Rows = await supabase_request(`tasks?select=*&user_id=eq.${ClientId}&order=created_at.asc`);
 	return Rows.map(row_to_task);
 }
 
 export async function insert_task(Task) {
-	const AccountId = await get_account_id();
 	const Rows = await supabase_request("tasks", {
 		method: "POST",
-		body: JSON.stringify(task_to_row(Task, AccountId))
+		body: JSON.stringify(task_to_row(Task))
 	});
 	return row_to_task(Rows[0]);
 }
 
 export async function update_task(Task) {
-	const AccountId = await get_account_id();
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const Rows = await supabase_request(`tasks?id=eq.${TaskId}&client_id=eq.${encodeURIComponent(AccountId)}`, {
+	const ClientId = encodeURIComponent(get_user_id());
+	const Rows = await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
 		method: "PATCH",
-		body: JSON.stringify(task_to_row(Task, AccountId))
+		body: JSON.stringify(task_to_row(Task))
 	});
 	return row_to_task(Rows[0]);
 }
 
 export async function remove_task(Task) {
-	const AccountId = await get_account_id();
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	await supabase_request(`tasks?id=eq.${TaskId}&client_id=eq.${encodeURIComponent(AccountId)}`, {
+	const ClientId = encodeURIComponent(get_user_id());
+	await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
 		method: "DELETE"
 	});
 }
 
-function task_to_row(Task, AccountId) {
+function task_to_row(Task) {
 	return {
-		client_id: AccountId,
+		user_id: get_user_id(),
 		title: Task.title,
 		description: Task.description || null,
 		completed: Boolean(Task.completed),
