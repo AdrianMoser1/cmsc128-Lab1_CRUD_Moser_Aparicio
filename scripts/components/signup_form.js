@@ -20,12 +20,11 @@ const MIN_PASSWORD_LENGTH = 8;
 export function setup_signup_form() {
 	const Form = document.getElementById("signupForm");
 	const ErrorBox = document.getElementById("signupError");
-	const SuccessBox = document.getElementById("signupSuccess");
 	const SubmitButton = Form.querySelector("button[type='submit']");
 
 	Form.addEventListener("submit", async (Event) => { 
 		Event.preventDefault(); // we handle submission ourselves so we can show inline feedback instead of a full page reload
-		clear_feedback(ErrorBox, SuccessBox);
+		clear_feedback(ErrorBox);
 
 		const Fields = new FormData(Form);
 		const DisplayName = Fields.get("display_name").trim();
@@ -63,8 +62,7 @@ export function setup_signup_form() {
 				return;
 			}
 
-			Form.reset();
-			show_success(SuccessBox, "Account created! Check your email to confirm your address, then log in.");
+			window.location.replace("account-created.html");
 		} catch (Error) {
 			// error handling for Network failures land here rather than the `error` which clarifies the cause issue
 			console.error(Error);
@@ -106,12 +104,6 @@ function show_error(ErrorBox, Message) {
 	ErrorBox.hidden = false;
 }
 
-function show_success(SuccessBox, Message) {
-	SuccessBox.textContent = Message;
-	SuccessBox.hidden = false;
-}
-
-function clear_feedback(ErrorBox, SuccessBox) {
+function clear_feedback(ErrorBox) {
 	ErrorBox.hidden = true;
-	SuccessBox.hidden = true;
 }
