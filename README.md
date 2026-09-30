@@ -11,7 +11,7 @@ change a row in a table) the public key and url doesn't need to be hidden in a .
 which requires node.js
 
 2. API endpoints/Data operations:
-- **Read tasks** - Gets all tasks for the current browser client using `fetch_tasks()` in `db_fetch.js`. The Supabase request/connection is handled by `db_connection.js`.
+- **Read tasks** - Gets all tasks for the signed-in account using `fetch_tasks()` in `db_fetch.js`, so tasks are shared across browsers. Existing tasks are reassigned from that browser's former local client ID on its first load after this change. The Supabase request/connection is handled by `db_connection.js`.
 
 - **Create task** - Adds a new task with its title, description, priority, tag, due date, and completion status. The form is handled in `add_task.js`, while the database insert is handled by `insert_task()` in `db_fetch.js`.
 
