@@ -1,13 +1,26 @@
 import { setup_add_task } from "./components/add_task.js";
 import { setup_task_view } from "./components/task_tally.js";
 import { fetch_tasks } from "./dependencies/db_fetch.js";
+import { require_auth_or_redirect, supabase } from "./dependencies/auth_connection.js";
 import { create_task_shortview } from "./components/task_shortview.js";
 import { refresh_task_view } from "./components/task_tally.js";
 
-setup_add_task();
-setup_task_view();
+const Session = await require_auth_or_redirect();
 
-load_tasks();
+if (Session) {
+	const User = Session.user;
+	const DisplayName = User.user_metadata?.display_name || User.email?.split("@")[0] || "there";
+	document.getElementById("userGreeting").textContent = `Welcome back! ${DisplayName}`;
+	document.getElementById("logoutBtn").addEventListener("click", async () => {
+		const { error } = await supabase.auth.signOut();
+		if (error) console.error("Failed to log out:", error);
+	});
+
+	setup_add_task();
+	setup_task_view();
+
+	load_tasks();
+}
 
 async function load_tasks() {
 	try {

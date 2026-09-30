@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Settings - Todo Aoi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✓</span>
+      <h1>Todo Aoi</h1>
+    </div>
+    <a class="btn btn-ghost btn-link" href="../index.html">Back to tasks</a>
+  </header>
+
+  <main class="dashboard auth-page">
+    <section class="auth-card" aria-labelledby="accountTitle">
+      <h2 id="accountTitle">Profile settings</h2>
+
+      <form id="accountForm" novalidate>
+        <div class="field">
+          <label for="accountDisplayName">Username</label>
+          <div class="account-field-control">
+            <input type="text" id="accountDisplayName" name="display_name" autocomplete="name" required disabled>
+            <button class="btn btn-ghost change-field-btn" id="changeDisplayNameBtn" type="button">Change</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="accountEmail">Email</label>
+          <div class="account-field-control">
+            <input type="email" id="accountEmail" name="email" autocomplete="email" required disabled>
+            <button class="btn btn-ghost change-field-btn" id="changeEmailBtn" type="button">Change</button>
+          </div>
+        </div>
+
+        <p class="field-error" id="accountError" role="alert" hidden></p>
+        <p class="field-success" id="accountSuccess" role="status" hidden></p>
+
+        <button class="btn btn-primary" type="submit">Save changes</button>
+      </form>
+
+    </section>
+  </main>
+
+  <script type="module">
+    import { require_auth_or_redirect } from "../scripts/dependencies/auth_connection.js";
+    import { setup_account_form } from "../scripts/components/account_form.js";
+
+    const Session = await require_auth_or_redirect("login.html");
+    if (Session) setup_account_form(Session.user);
+  </script>
+</body>
+</html>
