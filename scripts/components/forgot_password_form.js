@@ -10,11 +10,18 @@
 
 import { supabase } from "../dependencies/auth_connection.js";
 
+function get_reset_redirect_url() {
+	if (!window.location || window.location.protocol === "file:") {
+		return "http://localhost:5500/pages/reset-password.html";
+	}
+	return new URL("/pages/reset-password.html", window.location.origin).toString();
+}
+
 // Where Supabase should send the user after they click the emailed link. Supabase
 // requires this exact URL to be present in the project's "Redirect URLs" allow-list
 // (Authentication -> URL Configuration in the Supabase dashboard), otherwise the link
 // is rejected -- worth checking there first if testing this locally.
-const RESET_PASSWORD_REDIRECT = `${window.location.origin}/pages/reset-password.html`;
+const RESET_PASSWORD_REDIRECT = get_reset_redirect_url();
 
 /**
  * Wires up #forgotPasswordForm (field: email; feedback element: #forgotPasswordStatus).
@@ -68,6 +75,9 @@ export function setup_forgot_password_form() {
 function friendly_recovery_error(Error) {
 	const Message = (Error.message || "").toLowerCase();
 	if (Message.includes("rate limit")) return "Too many requests. Please wait a moment and try again.";
+	if (Message.includes("redirect") || Message.includes("invalid redirect") || Message.includes("url not allowed")) {
+		return "Reset emails are blocked by Supabase URL settings. Add your Live Server URL (for example http://localhost:5500) to Authentication > URL Configuration in Supabase.";
+	}
 	return "Something went wrong sending the reset link. Please try again.";
 }
 
