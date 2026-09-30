@@ -31,6 +31,7 @@
         <div class="field">
           <label for="loginPassword">Password</label>
           <input type="password" id="loginPassword" name="password" placeholder="Your password" required autocomplete="current-password">
+                    <a class="auth-inline-link" href="forgot-password.html">Forgot password?</a>
         </div>
 
         <p class="field-error" id="loginError" role="alert" hidden></p>
@@ -50,6 +51,15 @@
     // Guest-only page: if a session already exists, skip the form entirely.
     redirect_if_authenticated();
     setup_login_form();
+
+    // reset-password.html redirects here with ?reset=success once a password reset is
+    // confirmed, so the user gets explicit feedback that their new password is now live --
+    // rather than silently landing back on an unremarkable login form.
+    if (new URLSearchParams(window.location.search).get("reset") === "success") {
+      const SuccessBox = document.getElementById("loginSuccess");
+      SuccessBox.textContent = "Your password has been reset. Please log in with your new password.";
+      SuccessBox.hidden = false;
+    }
   </script>
 </body>
 </html>
