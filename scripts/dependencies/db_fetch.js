@@ -1,40 +1,50 @@
-import { get_user_id, supabase_request } from "./db_connection.js";
+import { supabase_request } from "./db_connection.js";
+import { get_current_user } from "./auth_connection.js";
 
 export async function fetch_tasks() {
-	const ClientId = encodeURIComponent(get_user_id());
+	const ClientId = encodeURIComponent(await get_authenticated_user_id());
 	const Rows = await supabase_request(`tasks?select=*&user_id=eq.${ClientId}&order=created_at.asc`);
 	return Rows.map(row_to_task);
 }
 
 export async function insert_task(Task) {
+	const UserId = await get_authenticated_user_id();
 	const Rows = await supabase_request("tasks", {
 		method: "POST",
-		body: JSON.stringify(task_to_row(Task))
+		body: JSON.stringify(task_to_row(Task, UserId))
 	});
 	return row_to_task(Rows[0]);
 }
 
 export async function update_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const ClientId = encodeURIComponent(get_user_id());
+	const UserId = await get_authenticated_user_id();
+	const ClientId = encodeURIComponent(UserId);
 	const Rows = await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
 		method: "PATCH",
-		body: JSON.stringify(task_to_row(Task))
+		body: JSON.stringify(task_to_row(Task, UserId))
 	});
 	return row_to_task(Rows[0]);
 }
 
 export async function remove_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const ClientId = encodeURIComponent(get_user_id());
+	const ClientId = encodeURIComponent(await get_authenticated_user_id());
 	await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
 		method: "DELETE"
 	});
 }
 
-function task_to_row(Task) {
+async function get_authenticated_user_id() {
+	const User = await get_current_user();
+	const UserId = User?.id;
+	if (!UserId) throw new Error("Not logged in");
+	return UserId;
+}
+
+function task_to_row(Task, UserId) {
 	return {
-		user_id: get_user_id(),
+		user_id: UserId,
 		title: Task.title,
 		description: Task.description || null,
 		completed: Boolean(Task.completed),

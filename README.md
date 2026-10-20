@@ -11,7 +11,7 @@ change a row in a table) the public key and url doesn't need to be hidden in a .
 which requires node.js
 
 2. API endpoints/Data operations:
-- **Read tasks** - Gets all tasks for the signed-in account using `fetch_tasks()` in `db_fetch.js`, so tasks are shared across browsers. Existing tasks are reassigned from that browser's former local client ID on its first load after this change. The Supabase request/connection is handled by `db_connection.js`.
+- **Read tasks** - Gets all tasks for the signed-in account using `fetch_tasks()` in `db_fetch.js`, so tasks are shared across browsers. The account ID is read from the active Supabase session, not directly from browser-controlled storage. The Supabase request/connection is handled by `db_connection.js`.
 
 - **Create task** - Adds a new task with its title, description, priority, tag, due date, and completion status. The form is handled in `add_task.js`, while the database insert is handled by `insert_task()` in `db_fetch.js`.
 
@@ -34,3 +34,6 @@ is mediated by `undo.js` before going through with `delete_task.js`.
 "Open with live server" in VS Code
 Add tasks however you like, click to edit an existing task, delete to delete an existing task then confirm.
 You must be connected with the internet!
+
++ How Activity 1 and Activity were merged:
+Activity 2 was made by building upon activity 1. Going forwards, the same method was done for the following activities by using the previous activity's branch to make a new branch for the new activity.

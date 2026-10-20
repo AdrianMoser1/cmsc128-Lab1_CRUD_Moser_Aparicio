@@ -31,6 +31,20 @@ export async function get_current_session() {
 	return data.session;
 }
 
+/*
+ * Unlike getSession(), getUser() verifies the access token with Supabase Auth.
+ * Use this result for authorization decisions instead of trusting persisted
+ * session data from browser storage.
+ */
+export async function get_current_user() {
+	const { data, error } = await supabase.auth.getUser();
+	if (error) {
+		console.error("Failed to verify auth user:", error);
+		return null;
+	}
+	return data.user;
+}
+
 /**
  * Guard for guest-only pages such as login and signup.
  * Redirects to the dashboard when a session is already active.
