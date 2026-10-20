@@ -3,7 +3,14 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 import { SupabaseUrl, SupabaseKey } from "./db_connection.js";
 
-export const POST_LOGIN_PAGE = "account.html";
+/*
+ * Where login_form.js sends the user after a successful login (Activity 3 req. #2:
+ * "directed straight to their To-Do List page").
+ * The path is relative to the page that uses it: login.html lives in /pages/, so the
+ * dashboard (index.html in the project root) is one level up. It used to point at
+ * account.html, which is why users landed on the profile settings page.
+ */
+export const POST_LOGIN_PAGE = "../index.html";
 
 /*
  * A single shared client instance. Every part of the app that needs auth
@@ -31,10 +38,8 @@ export async function get_current_session() {
 	return data.session;
 }
 
-/**
- * Guard for guest-only pages such as login and signup.
- * Redirects to the dashboard when a session is already active.
- */
+
+ //Redirects to the dashboard when a session is already active.
 export async function redirect_if_authenticated(HomePage = "../index.html") {
 	const Session = await get_current_session();
 	if (Session) window.location.replace(HomePage);
