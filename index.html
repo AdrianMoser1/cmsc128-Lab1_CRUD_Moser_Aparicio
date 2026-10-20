@@ -25,6 +25,15 @@
 
   <main class="dashboard">
 
+    <!-- Activity 3: Personal / Collaborative list switcher (wired up in list_switcher.js) -->
+    <section class="list-bar" aria-label="To-do lists">
+      <label class="filter-label" for="listSelect">List:</label>
+      <select class="filter-select" id="listSelect"></select>
+      <button class="btn btn-ghost" id="newListBtn" type="button">+ New list</button>
+      <button class="btn btn-ghost" id="manageListBtn" type="button" hidden>Members</button>
+    </section>
+    <dialog class="list-dialog" id="listDialog"></dialog>
+
     <section class="filter-row" aria-label="Task view options">
       <label class="filter-label" for="filterTag">Show:</label>
       <select class="filter-select" id="filterTag">
