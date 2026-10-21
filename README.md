@@ -35,5 +35,8 @@ is mediated by `undo.js` before going through with `delete_task.js`.
 Add tasks however you like, click to edit an existing task, delete to delete an existing task then confirm.
 You must be connected with the internet!
 
++ Collaborative lists:
+Run `act3_collab_lists.sql` in the Supabase SQL editor after the base `tasks` table has been created. This adds list membership, row-level security, and the RPCs used to manage shared lists.
+
 + How Activity 1 and Activity were merged:
 Activity 2 was made by building upon activity 1. Going forwards, the same method was done for the following activities by using the previous activity's branch to make a new branch for the new activity.
