@@ -1,4 +1,4 @@
-import { set_active_list_id } from "../dependencies/active_list.js";
+import { set_active_list_id } from "./active_list.js";
 import {
 	fetch_lists, create_list, delete_list,
 	add_list_member, fetch_list_members, remove_list_member

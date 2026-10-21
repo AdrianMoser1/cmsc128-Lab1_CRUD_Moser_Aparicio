@@ -1,6 +1,6 @@
 import { supabase_request } from "./db_connection.js";
 import { get_current_user } from "./auth_connection.js";
-import { get_active_list_id } from "./active_list.js";
+import { get_active_list_id } from "../components/active_list.js";
 
 /*
  *   Personal list      -> list_id IS NULL AND user_id = me
