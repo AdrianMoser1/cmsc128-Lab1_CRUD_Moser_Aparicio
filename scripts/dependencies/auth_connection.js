@@ -3,7 +3,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 import { SupabaseUrl, SupabaseKey } from "./db_connection.js";
 
-export const POST_LOGIN_PAGE = "account.html";
+export const POST_LOGIN_PAGE = "../index.html";
 
 /*
  * A single shared client instance. Every part of the app that needs auth

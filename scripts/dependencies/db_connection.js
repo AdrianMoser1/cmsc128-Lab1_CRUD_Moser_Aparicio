@@ -21,7 +21,13 @@ export async function supabase_request(Path, Options = {}) {
 
 	if (!Response.ok) {
 		const ErrorText = await Response.text();
-		throw new Error(`Supabase request failed (${Response.status}): ${ErrorText}`);
+		const Failure = new Error(`Supabase request failed (${Response.status}): ${ErrorText}`);
+		// P0001 = our own "raise exception" messages, which are safe to show to the user
+		try {
+			const Body = JSON.parse(ErrorText);
+			if (Body.code === "P0001") Failure.userMessage = Body.message;
+		} catch { /* Response body is not JSON. */ }
+		throw Failure;
 	}
 
 	if (Response.status === 204) return null;

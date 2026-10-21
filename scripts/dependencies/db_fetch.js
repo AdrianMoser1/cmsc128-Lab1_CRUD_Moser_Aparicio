@@ -1,9 +1,18 @@
 import { supabase_request } from "./db_connection.js";
 import { get_current_user } from "./auth_connection.js";
+import { get_active_list_id } from "./active_list.js";
 
+/*
+ *   Personal list      -> list_id IS NULL AND user_id = me
+ *   Collaborative list -> list_id = <active list>  (RLS only returns rows if I'm a member)
+ */
 export async function fetch_tasks() {
-	const ClientId = encodeURIComponent(await get_authenticated_user_id());
-	const Rows = await supabase_request(`tasks?select=*&user_id=eq.${ClientId}&order=created_at.asc`);
+	const UserId = await get_authenticated_user_id();
+	const ListId = get_active_list_id();
+	const Scope = ListId
+		? `list_id=eq.${encodeURIComponent(ListId)}`
+		: `list_id=is.null&user_id=eq.${encodeURIComponent(UserId)}`;
+	const Rows = await supabase_request(`tasks?select=*&${Scope}&order=created_at.asc`);
 	return Rows.map(row_to_task);
 }
 
@@ -11,28 +20,29 @@ export async function insert_task(Task) {
 	const UserId = await get_authenticated_user_id();
 	const Rows = await supabase_request("tasks", {
 		method: "POST",
-		body: JSON.stringify(task_to_row(Task, UserId))
+		// user_id = who created it; list_id = the list currently open (null = Personal)
+		body: JSON.stringify({ ...task_to_row(Task), user_id: UserId, list_id: get_active_list_id() })
 	});
 	return row_to_task(Rows[0]);
 }
 
+// Filters by task id only: in a shared list the editor is not the creator, so a
+// user_id filter would wrongly block members. RLS decides who may touch the row.
+// user_id / list_id are deliberately NOT in the PATCH body, so editing never changes ownership.
 export async function update_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const UserId = await get_authenticated_user_id();
-	const ClientId = encodeURIComponent(UserId);
-	const Rows = await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
+	const Rows = await supabase_request(`tasks?id=eq.${TaskId}`, {
 		method: "PATCH",
-		body: JSON.stringify(task_to_row(Task, UserId))
+		body: JSON.stringify(task_to_row(Task))
 	});
+	if (!Rows?.length) throw new Error("Task not found or you no longer have access to it.");
 	return row_to_task(Rows[0]);
 }
 
 export async function remove_task(Task) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
-	const ClientId = encodeURIComponent(await get_authenticated_user_id());
-	await supabase_request(`tasks?id=eq.${TaskId}&user_id=eq.${ClientId}`, {
-		method: "DELETE"
-	});
+	const Rows = await supabase_request(`tasks?id=eq.${TaskId}`, { method: "DELETE" });
+	if (!Rows?.length) throw new Error("Task not found or you no longer have access to it.");
 }
 
 async function get_authenticated_user_id() {
@@ -42,9 +52,8 @@ async function get_authenticated_user_id() {
 	return UserId;
 }
 
-function task_to_row(Task, UserId) {
+function task_to_row(Task) {
 	return {
-		user_id: UserId,
 		title: Task.title,
 		description: Task.description || null,
 		completed: Boolean(Task.completed),
@@ -59,6 +68,7 @@ function row_to_task(Row) {
 	return {
 		id: Row.id,
 		uid: Row.id,
+		list_id: Row.list_id || null,
 		title: Row.title,
 		description: Row.description || "",
 		start_date: Row.created_at?.slice(0, 10) || "",

@@ -83,7 +83,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 	}
 
 	// ---- dialog ------------------------------------------------------------
-	function open_dialog(Title, Build) {
+	async function open_dialog(Title, Build) {
 		Dialog.replaceChildren(el("h2", Title));
 		const ErrorBox = el("p", "", "field-error dialog-error");
 		ErrorBox.setAttribute("role", "alert");
@@ -92,7 +92,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 			ErrorBox.textContent = Message || "";
 			ErrorBox.hidden = !Message;
 		};
-		Build(Dialog, show_error);
+		await Build(Dialog, show_error);
 		Dialog.append(ErrorBox);
 
 		const Actions = el("div", "", "dialog-actions");

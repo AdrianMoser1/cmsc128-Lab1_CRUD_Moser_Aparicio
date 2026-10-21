@@ -886,6 +886,7 @@ input[type="password"]::-ms-clear {
   padding: 1px 8px;
 }
 .btn-small { padding: 4px 10px; font-size: 12px; }
-.dialog-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+.list-dialog .dialog-actions { justify-content: flex-end; margin-top: 14px; }
+.dialog-error { margin: 10px 0 0; }
 .list-dialog .btn-danger { margin-top: 10px; }
  
