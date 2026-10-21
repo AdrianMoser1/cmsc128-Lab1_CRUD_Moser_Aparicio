@@ -584,6 +584,12 @@ input:disabled {
   cursor: not-allowed;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: rgba(91, 100, 114, 0.45);
+  opacity: 1;
+}
+
 #taskDescription {
   min-height: 240px;
   resize: none;
