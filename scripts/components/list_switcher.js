@@ -46,11 +46,14 @@ export async function setup_list_switcher(UserId, OnListChange) {
 
 		const Owned = Lists.filter((List) => List.owner_id === UserId);
 		const Shared = Lists.filter((List) => List.owner_id !== UserId);
-		for (const [Label, Group] of [["My collaborative lists", Owned], ["Shared with me", Shared]]) {
+		for (const [Label, Group] of [["My created lists", Owned], ["Shared with me", Shared]]) {
 			if (!Group.length) continue;
 			const OptGroup = document.createElement("optgroup");
 			OptGroup.label = Label;
-			Group.forEach((List) => OptGroup.appendChild(new Option(List.name, List.id)));
+			Group.forEach((List) => {
+				const Icon = List.member_count > 1 ? "👥 " : "";
+				OptGroup.appendChild(new Option(`${Icon}${List.name}`, List.id));
+			});
 			Select.appendChild(OptGroup);
 		}
 		Select.value = SelectedValue;
@@ -74,6 +77,18 @@ export async function setup_list_switcher(UserId, OnListChange) {
 			// e.g. migration not run yet: degrade to Personal-only instead of breaking the page
 			console.error("Could not load lists:", Error);
 			Lists = [];
+		}
+		if (Lists.length) {
+			Lists = await Promise.all(Lists.map(async (List) => {
+				if (List.owner_id !== UserId) return { ...List, member_count: 2 };
+				try {
+					const Members = await fetch_list_members(List.id);
+					return { ...List, member_count: Members.length };
+				} catch (Error) {
+					console.error(`Could not load members for list "${List.name}":`, Error);
+					return { ...List, member_count: 0 };
+				}
+			}));
 		}
 		let Saved = null;
 		try { Saved = localStorage.getItem(StorageKey); } catch { /* ignore */ }
@@ -106,7 +121,12 @@ export async function setup_list_switcher(UserId, OnListChange) {
 
 	// ---- create a list -----------------------------------------------------
 	NewListBtn.addEventListener("click", () => {
-		open_dialog("New collaborative list", (Root, show_error) => {
+		open_dialog("Create a New List", (Root, show_error) => {
+			Root.append(el(
+				"p",
+				"Your personal list is private to only you, but any new lists can have members added to share with.",
+				"list-informer"
+			));
 			const Form = el("form", "", "list-form");
 			const Input = el("input");
 			Input.type = "text";

@@ -561,11 +561,14 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
 select,
-#taskTitle {
+#taskTitle,
+textarea {
   font-family: var(--font-body);
   font-size: 14px;
   padding: 9px 10px;
@@ -573,6 +576,18 @@ select,
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
+}
+
+input:disabled {
+  color: var(--ink-soft);
+  background: #EFECE1;
+  cursor: not-allowed;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(91, 100, 114, 0.45);
+  opacity: 1;
 }
 
 #taskDescription {
@@ -849,6 +864,17 @@ input[type="password"]::-ms-clear {
 }
 .list-bar .filter-select { min-width: 200px; max-width: 100%; }
 .list-bar .btn { padding: 8px 14px; }
+.list-bar #newListBtn {
+  background: #285D5A;
+  color: var(--accent-ink);
+  border-color: #285D5A;
+}
+.list-bar #newListBtn:hover { background: #214E4B; }
+.list-bar #manageListBtn {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.list-bar #manageListBtn:hover { background: rgba(47, 111, 107, 0.1); }
  
 .list-dialog {
   border: none;
@@ -865,6 +891,11 @@ input[type="password"]::-ms-clear {
   font-size: 19px;
   font-weight: 600;
   margin: 0 0 16px;
+}
+.list-informer {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin: -4px 0 12px;
 }
 .list-form { display: flex; gap: 8px; margin: 12px 0; }
 .list-form input { flex: 1; min-width: 0; }
@@ -886,7 +917,7 @@ input[type="password"]::-ms-clear {
   padding: 1px 8px;
 }
 .btn-small { padding: 4px 10px; font-size: 12px; }
-.list-dialog .dialog-actions { justify-content: flex-end; margin-top: 14px; }
+.list-dialog .dialog-actions { justify-content: flex-start; margin-top: 14px; }
 .dialog-error { margin: 10px 0 0; }
 .list-dialog .btn-danger { margin-top: 10px; }
  
