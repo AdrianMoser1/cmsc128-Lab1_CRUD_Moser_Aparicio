@@ -13,8 +13,7 @@ async function get_auth_context() {
 
 const enc = encodeURIComponent;
 
-// Every list I own OR was added to. RLS (lists_select) already filters this, so a list
-// I wasn't added to simply never appears: "Nikko can't see Victor's Group List".
+// Supabase RLS handles not giving data not owned by the user
 export async function fetch_lists() {
 	const { Token } = await get_auth_context();
 	return supabase_request("lists?select=id,name,owner_id,created_at&order=created_at.asc", {}, Token);
