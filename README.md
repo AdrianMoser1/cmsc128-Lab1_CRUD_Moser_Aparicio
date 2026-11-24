@@ -11,7 +11,7 @@ change a row in a table) the public key and url doesn't need to be hidden in a .
 which requires node.js
 
 2. API endpoints/Data operations:
-- **Read tasks** - Gets all tasks for the current browser client using `fetch_tasks()` in `db_fetch.js`. The Supabase request/connection is handled by `db_connection.js`.
+- **Read tasks** - Gets all tasks for the signed-in account using `fetch_tasks()` in `db_fetch.js`, so tasks are shared across browsers. The account ID is read from the active Supabase session, not directly from browser-controlled storage. The Supabase request/connection is handled by `db_connection.js`.
 
 - **Create task** - Adds a new task with its title, description, priority, tag, due date, and completion status. The form is handled in `add_task.js`, while the database insert is handled by `insert_task()` in `db_fetch.js`.
 
@@ -20,17 +20,54 @@ which requires node.js
 - **Delete task** - Removes an existing task through `delete_task()` in `delete_task.js`. The database deletion is handled by `remove_task()` in `db_fetch.js`. Undo logic
 is mediated by `undo.js` before going through with `delete_task.js`.
 
+# Images taken from the website
 
-![task popup](images/TaskPopup.png)
-**Task Edit/Add Popup**
-![task popup](images/PopulatedPage.png)
-**Populated Page**
-![task popup](images/Filter.png)
-**Filter/Sort**
-![task popup](images/CompletedTaskVisible.png)
-**Completed Tasks**
+<div align="center">
+  <strong>Login Page</strong><br>
+  <img src="images/LoginPage.png" alt="Login page">
+</div>
 
-+ How to launch:
-"Open with live server" in VS Code
-Add tasks however you like, click to edit an existing task, delete to delete an existing task then confirm.
-You must be connected with the internet!
+<div align="center">
+  <strong>Register Page</strong><br>
+  <img src="images/RegisterPage.png" alt="Register page">
+</div>
+
+<div align="center">
+  <strong>Task Edit/Add Popup</strong><br>
+  <img src="images/TaskPopup.png" alt="Task popup">
+</div>
+
+<div align="center">
+  <strong>Populated Page</strong><br>
+  <img src="images/PopulatedPage.png" alt="Populated page">
+</div>
+
+<div align="center">
+  <strong>Filter/Sort</strong><br>
+  <img src="images/Filter.png" alt="Filter and sort">
+</div>
+
+<div align="center">
+  <strong>Completed Tasks</strong><br>
+  <img src="images/CompletedTasksVisible.png" alt="Completed tasks">
+</div>
+
+<div align="center">
+  <strong>Profile Settings</strong><br>
+  <img src="images/ProfileSettings.png" alt="Profile settings">
+</div>
+
+<div align="center">
+  <strong>Collaborative Lists</strong><br>
+  <img src="images/CollaborativeLists.png" alt="Collaborative lists">
+</div>
+
+---
+
++ How Activity 1 and Activity were merged:
+Activity 2 was made by building upon activity 1. Going forwards, the same method was done for the following activities by using the previous activity's branch to make a new branch for the new activity.
+
+# Running locally
+#### !!! Be advised that the functions of the app as it is in its current version won't work without an internet connection
+
++ Without accessing the deployed URL, one can run the app locally in VS Code with the live server extension. Simply open `index.html` and it will redirect you to the current page depending on the status of your session, if there is a logged in account or not. 

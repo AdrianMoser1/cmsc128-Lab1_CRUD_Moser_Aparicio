@@ -16,9 +16,23 @@
       <span class="brand-mark" aria-hidden="true">✓</span>
       <h1>Todo Aoi</h1>
     </div>
+    <div class="account-actions">
+      <span class="user-greeting" id="userGreeting"></span>
+      <a class="btn btn-ghost btn-link" href="pages/account.html">Account</a>
+      <button class="btn btn-ghost" id="logoutBtn" type="button">Log out</button>
+    </div>
   </header>
 
   <main class="dashboard">
+
+    <!-- Activity 3: Personal / Collaborative list switcher (wired up in list_switcher.js) -->
+    <section class="list-bar" aria-label="To-do lists">
+      <label class="filter-label" for="listSelect">List:</label>
+      <select class="filter-select" id="listSelect"></select>
+      <button class="btn btn-ghost" id="newListBtn" type="button">+ New list</button>
+      <button class="btn btn-ghost" id="manageListBtn" type="button" hidden>Members</button>
+    </section>
+    <dialog class="list-dialog" id="listDialog"></dialog>
 
     <section class="filter-row" aria-label="Task view options">
       <label class="filter-label" for="filterTag">Show:</label>

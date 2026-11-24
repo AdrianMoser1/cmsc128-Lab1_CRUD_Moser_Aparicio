@@ -70,6 +70,17 @@ body {
   letter-spacing: 0.2px;
 }
 
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-greeting {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
 /* 
    Buttons
  */
@@ -82,6 +93,11 @@ body {
   border: 1px solid transparent;
   cursor: pointer;
   transition: transform 0.06s ease, background-color 0.15s ease;
+}
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
 }
 .btn:active { transform: translateY(1px); }
 
@@ -111,6 +127,20 @@ body {
   border-color: var(--danger) !important;
 }
 .btn-danger-solid:hover { background: #9A3D22 !important; }
+
+@media (max-width: 560px) {
+  .app-header {
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
+  .account-actions {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
 
 .undo-dialog {
   position: fixed;
@@ -515,7 +545,7 @@ body {
   margin: 0 0 18px;
 }
 
-.field { display: flex; flex-direction: column; margin-bottom: 14px; }
+.field { display: flex; flex-direction: column; margin-bottom: 10px; }
 
 .field-row {
   display: flex;
@@ -531,11 +561,14 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
 select,
-#taskTitle {
+#taskTitle,
+textarea {
   font-family: var(--font-body);
   font-size: 14px;
   padding: 9px 10px;
@@ -543,6 +576,18 @@ select,
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
+}
+
+input:disabled {
+  color: var(--ink-soft);
+  background: #EFECE1;
+  cursor: not-allowed;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(91, 100, 114, 0.45);
+  opacity: 1;
 }
 
 #taskDescription {
@@ -596,6 +641,50 @@ select,
   font-size: 12px;
   margin: 4px 0 0;
   min-height: 14px;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 42px;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.password-toggle:hover {
+  color: var(--accent);
+  background: rgba(47, 111, 107, 0.08);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid rgba(47, 111, 107, 0.35);
+  outline-offset: 2px;
 }
 
 .dialog-actions {
@@ -656,3 +745,179 @@ select,
 }
 .toast.is-success { background: var(--success); }
 .toast.is-error { background: var(--danger); }
+
+/*
+   Auth pages (Sign Up / Login / Profile)
+   Reuses existing tokens (--paper-raised, --accent, --line, etc.) so these pages
+   feel native to the app instead of introducing a second visual language.
+*/
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 26px;
+}
+
+.auth-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-field-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-field-control input {
+  min-width: 0;
+  flex: 1;
+}
+
+.change-field-btn {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+}
+
+.auth-card .btn {
+  margin-top: 6px;
+}
+
+.auth-card .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.confirmation-button {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.field-success {
+  color: var(--success);
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+.auth-switch {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.auth-inline-link {
+  align-self: center;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.auth-inline-link:hover {
+  text-decoration: underline;
+}
+
+.auth-help-text {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin: -8px 0 18px;
+}
+
+.list-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.list-bar .filter-select { min-width: 200px; max-width: 100%; }
+.list-bar .btn { padding: 8px 14px; }
+.list-bar #newListBtn {
+  background: #285D5A;
+  color: var(--accent-ink);
+  border-color: #285D5A;
+}
+.list-bar #newListBtn:hover { background: #214E4B; }
+.list-bar #manageListBtn {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.list-bar #manageListBtn:hover { background: rgba(47, 111, 107, 0.1); }
+ 
+.list-dialog {
+  border: none;
+  border-radius: 14px;
+  padding: 26px 26px 22px;
+  width: min(92vw, 460px);
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 20px 60px rgba(33, 38, 45, 0.25);
+}
+.list-dialog::backdrop { background: rgba(33, 38, 45, 0.45); }
+.list-dialog h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.list-informer {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin: -4px 0 12px;
+}
+.list-form { display: flex; gap: 8px; margin: 12px 0; }
+.list-form input { flex: 1; min-width: 0; }
+.member-list { list-style: none; margin: 0; padding: 0; }
+.member-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.member-list li > span:first-child { flex: 1; }
+.member-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.btn-small { padding: 4px 10px; font-size: 12px; }
+.list-dialog .dialog-actions { justify-content: flex-start; margin-top: 14px; }
+.dialog-error { margin: 10px 0 0; }
+.list-dialog .btn-danger { margin-top: 10px; }
+ 
