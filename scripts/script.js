@@ -5,6 +5,7 @@ import { require_auth_or_redirect, supabase } from "./dependencies/auth_connecti
 import { create_task_shortview } from "./components/task_shortview.js";
 import { refresh_task_view } from "./components/task_tally.js";
 import { setup_list_switcher } from "./components/list_switcher.js";
+import { show_toast } from "./components/toast.js";
 
 const Session = await require_auth_or_redirect();
 
@@ -18,9 +19,21 @@ if (Session) {
 	const User = Session.user;
 	const DisplayName = User.user_metadata?.display_name || User.email?.split("@")[0] || "there";
 	document.getElementById("userGreeting").textContent = `Welcome back! ${DisplayName}`;
-	document.getElementById("logoutBtn").addEventListener("click", async () => {
-		const { error } = await supabase.auth.signOut();
-		if (error) console.error("Failed to log out:", error);
+	const LogoutButton = document.getElementById("logoutBtn");
+	LogoutButton.addEventListener("click", async () => {
+		LogoutButton.disabled = true;
+		LogoutButton.setAttribute("aria-busy", "true");
+		LogoutButton.textContent = "Logging out...";
+		try {
+			const { error } = await supabase.auth.signOut();
+			if (error) throw error;
+		} catch (Error) {
+			console.error("Failed to log out:", Error);
+			show_toast("Could not log out. Check your connection and try again.", "error");
+			LogoutButton.disabled = false;
+			LogoutButton.removeAttribute("aria-busy");
+			LogoutButton.textContent = "Log out";
+		}
 	});
 
 	setup_add_task();
@@ -42,11 +55,13 @@ function clear_rendered_tasks(TaskList) {
 
 async function load_tasks() {
 	const ThisLoad = ++LoadCounter;
+	const TaskList = document.getElementById("taskList");
+	TaskList.classList.add("is-loading");
+	TaskList.setAttribute("aria-busy", "true");
 	try {
 		const Tasks = await fetch_tasks(); // scoped to the active list inside db_fetch.js
 		if (ThisLoad !== LoadCounter) return; // user already switched lists again
 
-		const TaskList = document.getElementById("taskList");
 		clear_rendered_tasks(TaskList);
 
 		if (Tasks.length) EmptyState.remove();
@@ -56,6 +71,13 @@ async function load_tasks() {
 		refresh_task_view();
 	} catch (Error) {
 		console.error(Error);
-		alert("Tasks could not be loaded. Check your connection to the Internet");
+		if (ThisLoad === LoadCounter) {
+			show_toast("Tasks could not be loaded. Check your connection and try again.", "error");
+		}
+	} finally {
+		if (ThisLoad === LoadCounter) {
+			TaskList.classList.remove("is-loading");
+			TaskList.removeAttribute("aria-busy");
+		}
 	}
 }

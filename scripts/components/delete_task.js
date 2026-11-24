@@ -1,5 +1,6 @@
 import { refresh_task_view } from "./task_tally.js";
 import { remove_task } from "../dependencies/db_fetch.js";
+import { show_toast } from "./toast.js";
 
 const DELETE_DELAY = 10000;
 
@@ -37,13 +38,19 @@ export function delete_task(Task) {
 	}, 1000);
 	UndoTimer = setTimeout(async () => {
 		clearInterval(CountdownTimer);
-		UndoDialog.remove();
+		UndoDialog.querySelector("span").textContent = "Deleting task...";
+		const UndoButton = UndoDialog.querySelector(".undo-delete-btn");
+		UndoButton.disabled = true;
+		UndoButton.setAttribute("aria-busy", "true");
+		UndoButton.textContent = "Deleting...";
 		try {
 			await remove_task(Task);
+			UndoDialog.remove();
+			show_toast("Task deleted.");
 		} catch (Error) {
 			console.error(Error);
 			RestoreTask();
-			alert(`The task could not be deleted.\n\n${Error.message}`);
+			show_toast("Task could not be deleted. Check your connection and try again.", "error");
 		}
 	}, DELETE_DELAY);
 }

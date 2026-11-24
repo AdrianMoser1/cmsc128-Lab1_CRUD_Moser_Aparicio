@@ -2,6 +2,7 @@ import { open_task_popup } from "./task_popup.js";
 import { delete_task } from "./delete_task.js";
 import { render_task_tally } from "./task_tally.js";
 import { update_task } from "../dependencies/db_fetch.js";
+import { show_toast } from "./toast.js";
 
 export function create_task_shortview(Task) {
 	const TaskCard = document.createElement("article");
@@ -38,27 +39,33 @@ export function create_task_shortview(Task) {
 	TaskCard.addEventListener("click", () => open_task_popup(Task));
 	TaskCard.querySelector(".task-check").addEventListener("click", async (Event) => {
 		Event.stopPropagation();
+		const CheckButton = Event.currentTarget;
 		const PreviousCompleted = Task.completed;
+		const PreviousHidden = TaskCard.hidden;
 		Task.completed = !Task.completed;
 		TaskCard.dataset.completed = Task.completed ? "true" : "false";
 		TaskCard.classList.toggle("is-completed", Task.completed);
 		TaskCard.classList.toggle("is-overdue", is_overdue(Task));
 		TaskCard.hidden = Task.completed && !document.getElementById("showCompleted")?.checked;
-		Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
-		Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
+		CheckButton.disabled = true;
+		CheckButton.setAttribute("aria-pressed", String(Task.completed));
+		CheckButton.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
 		try {
 			await update_task(Task);
 			render_task_tally();
+			show_toast(Task.completed ? "Task completed." : "Task reopened.");
 		} catch (Error) {
 			console.error(Error);
 			Task.completed = PreviousCompleted;
 			TaskCard.dataset.completed = Task.completed ? "true" : "false";
 			TaskCard.classList.toggle("is-completed", Task.completed);
 			TaskCard.classList.toggle("is-overdue", is_overdue(Task));
-			TaskCard.hidden = false;
-			Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
-			Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
-			alert(`The task could not be updated.\n\n${Error.message}`);
+			TaskCard.hidden = PreviousHidden;
+			CheckButton.setAttribute("aria-pressed", String(Task.completed));
+			CheckButton.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
+			show_toast("Task could not be updated. Check your connection and try again.", "error");
+		} finally {
+			CheckButton.disabled = false;
 		}
 	});
 	TaskCard.querySelector(".delete-btn").addEventListener("click", (Event) => {

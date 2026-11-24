@@ -2,6 +2,7 @@ import { open_task_popup } from "./task_popup.js";
 import { create_task_shortview } from "./task_shortview.js";
 import { refresh_task_view } from "./task_tally.js";
 import { insert_task, update_task } from "../dependencies/db_fetch.js";
+import { show_toast } from "./toast.js";
 
 function create_task_from_form(FormData) {
 	return {
@@ -27,9 +28,17 @@ export function setup_add_task() {
     // listens to any form submit action but filters it to the dialog ## see task_popup.js
 	document.addEventListener("submit", async (Event) => {
 		if (Event.target.id !== "taskForm") return;
+		Event.preventDefault();
 		const Task = create_task_from_form(new FormData(Event.target));
 		const TaskDialog = document.getElementById("task-dialog");
 		const PreviousTask = TaskDialog.taskToEdit;
+		const SubmitButton = Event.target.querySelector("button[type='submit']");
+		const ErrorBox = Event.target.querySelector("#taskSaveError");
+		ErrorBox.hidden = true;
+		ErrorBox.textContent = "";
+		SubmitButton.disabled = true;
+		SubmitButton.setAttribute("aria-busy", "true");
+		SubmitButton.textContent = "Saving...";
 
 		try {
 			const SavedTask = PreviousTask
@@ -44,11 +53,19 @@ export function setup_add_task() {
 				TaskList.appendChild(create_task_shortview(SavedTask));
 			}
 			refresh_task_view();
+			TaskDialog.taskToEdit = null;
+			TaskDialog.close();
+			show_toast(PreviousTask ? "Task updated." : "Task added.");
 		} catch (Error) {
 			console.error(Error);
-			alert(`The task could not be saved.\n\n${Error.message}`);
+			ErrorBox.textContent = "Task could not be saved. Check your connection and try again.";
+			ErrorBox.hidden = false;
+		} finally {
+			if (TaskDialog.open) {
+				SubmitButton.disabled = false;
+				SubmitButton.removeAttribute("aria-busy");
+				SubmitButton.textContent = PreviousTask ? "Apply Edits" : "Add task";
+			}
 		}
-
-		TaskDialog.taskToEdit = null;
 	});
 }
