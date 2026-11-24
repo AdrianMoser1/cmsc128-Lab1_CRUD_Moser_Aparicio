@@ -22,8 +22,9 @@ export function setup_add_task() {
 	const AddTaskButton = document.getElementById("addTaskBtn");
 	const EmptyAddTaskButton = document.getElementById("emptyAddTaskBtn");
 
-	AddTaskButton.addEventListener("click", () => open_task_popup());
-	EmptyAddTaskButton.addEventListener("click", () => open_task_popup());
+	for (const Button of [AddTaskButton, EmptyAddTaskButton]) {
+		Button.addEventListener("click", () => open_task_popup());
+	}
 	
     // listens to any form submit action but filters it to the dialog ## see task_popup.js
 	document.addEventListener("submit", async (Event) => {
@@ -49,12 +50,18 @@ export function setup_add_task() {
 				SavedTask.shortview = PreviousTask.shortview;
 				PreviousTask.shortview.replaceWith(create_task_shortview(SavedTask));
 			} else {
-				document.getElementById("emptyState")?.remove();
 				TaskList.appendChild(create_task_shortview(SavedTask));
 			}
-			refresh_task_view();
 			TaskDialog.taskToEdit = null;
 			TaskDialog.close();
+			const FocusWasOnEmptyState = document.activeElement === EmptyAddTaskButton;
+			refresh_task_view();
+			if (FocusWasOnEmptyState) {
+				const NextControl = SavedTask.shortview.hidden
+					? document.getElementById("showAllTasksBtn")
+					: SavedTask.shortview.querySelector(".task-title-edit");
+				NextControl.focus();
+			}
 			show_toast(PreviousTask ? "Task updated." : "Task added.");
 		} catch (Error) {
 			console.error(Error);
