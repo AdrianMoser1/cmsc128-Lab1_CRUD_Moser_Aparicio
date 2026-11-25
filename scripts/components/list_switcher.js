@@ -4,6 +4,7 @@ import {
 	add_list_member, fetch_list_members, remove_list_member
 } from "../dependencies/db_lists.js";
 import { show_toast } from "./toast.js";
+import { confirm_action } from "./confirm_action.js";
 
 const PERSONAL = "personal"; // <option> value for the Personal list (stored as list_id = null)
 
@@ -22,6 +23,8 @@ export async function setup_list_switcher(UserId, OnListChange) {
 	const NewListBtn = document.getElementById("newListBtn");
 	const ManageBtn = document.getElementById("manageListBtn");
 	const Dialog = document.getElementById("listDialog");
+	const SharedIcon = document.getElementById("listSharedIcon");
+	const PersonalIcon = document.getElementById("listPersonalIcon");
 	// Remembered per account, so user B logging in on the same browser never inherits A's list.
 	const StorageKey = `todo_aoi_active_list:${UserId}`;
 
@@ -39,6 +42,15 @@ export async function setup_list_switcher(UserId, OnListChange) {
 		return Lists.find((List) => List.id === Id) || null;
 	}
 
+	function close_on_backdrop_click(TargetDialog, Event) {
+		if (Event.target !== TargetDialog) return;
+		const Bounds = TargetDialog.getBoundingClientRect();
+		if (
+			Event.clientX < Bounds.left || Event.clientX > Bounds.right ||
+			Event.clientY < Bounds.top || Event.clientY > Bounds.bottom
+		) TargetDialog.close();
+	}
+
 	// ---- selection ---------------------------------------------------------
 	// Rebuilds the dropdown from the server's answer. RLS guarantees `Lists` only contains
 	// lists I own or was added to.
@@ -52,8 +64,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 			const OptGroup = document.createElement("optgroup");
 			OptGroup.label = Label;
 			Group.forEach((List) => {
-				const Icon = List.member_count > 1 ? "👥 " : "";
-				OptGroup.appendChild(new Option(`${Icon}${List.name}`, List.id));
+				OptGroup.appendChild(new Option(List.name, List.id));
 			});
 			Select.appendChild(OptGroup);
 		}
@@ -67,6 +78,8 @@ export async function setup_list_switcher(UserId, OnListChange) {
 		Select.value = Valid;
 		set_active_list_id(Valid === PERSONAL ? null : Valid);
 		ManageBtn.hidden = Valid === PERSONAL; // Personal has no members to manage
+		PersonalIcon.hidden = Valid !== PERSONAL;
+		SharedIcon.hidden = Valid === PERSONAL;
 		try { localStorage.setItem(StorageKey, Valid); } catch { /* storage blocked: not critical */ }
 		return Valid;
 	}
@@ -103,9 +116,31 @@ export async function setup_list_switcher(UserId, OnListChange) {
 		return Selected;
 	}
 
+	Dialog.addEventListener("click", (Event) => close_on_backdrop_click(Dialog, Event));
+
+	function close_dialog_button() {
+		const Button = el("button", "", "dialog-close");
+		Button.type = "button";
+		Button.setAttribute("aria-label", "Close dialog");
+		Button.innerHTML = `
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+				<path d="m18 6-12 12M6 6l12 12"></path>
+			</svg>
+		`;
+		return Button;
+	}
+
 	// ---- dialog ------------------------------------------------------------
 	async function open_dialog(Title, Build) {
-		Dialog.replaceChildren(el("h2", Title));
+		const Heading = el("div", "", "dialog-heading");
+		const HeadingTitle = el("h2", Title);
+		HeadingTitle.id = "listDialogTitle";
+		Heading.append(HeadingTitle);
+		const CloseButton = close_dialog_button();
+		CloseButton.addEventListener("click", () => Dialog.close());
+		Heading.append(CloseButton);
+		Dialog.setAttribute("aria-labelledby", HeadingTitle.id);
+		Dialog.replaceChildren(Heading);
 		const ErrorBox = el("p", "", "field-error dialog-error");
 		ErrorBox.setAttribute("role", "alert");
 		ErrorBox.hidden = true;
@@ -115,16 +150,9 @@ export async function setup_list_switcher(UserId, OnListChange) {
 		};
 		const BuildPromise = Build(Dialog, show_error);
 		Dialog.append(ErrorBox);
-
-		const Actions = el("div", "", "dialog-actions");
-		const CloseBtn = el("button", "Close", "btn btn-ghost");
-		CloseBtn.type = "button";
-		CloseBtn.addEventListener("click", () => Dialog.close());
-		Actions.append(CloseBtn);
-		Dialog.append(Actions);
 		Dialog.showModal();
 		await BuildPromise;
-		Dialog.append(ErrorBox, Actions);
+		Dialog.append(ErrorBox);
 	}
 
 	// ---- create a list -----------------------------------------------------
@@ -265,7 +293,11 @@ export async function setup_list_switcher(UserId, OnListChange) {
 				const Delete = el("button", "Delete this list", "btn btn-danger");
 				Delete.type = "button";
 				Delete.addEventListener("click", async () => {
-					if (!confirm(`Delete "${List.name}" and all of its tasks for everyone?`)) return;
+					if (!await confirm_action(
+						"Delete this list?",
+						`Delete "${List.name}" and all of its tasks for everyone?`,
+						"Delete list"
+					)) return;
 					Delete.disabled = true;
 					Delete.setAttribute("aria-busy", "true");
 					Delete.textContent = "Deleting...";
@@ -288,7 +320,11 @@ export async function setup_list_switcher(UserId, OnListChange) {
 				const Leave = el("button", "Leave this list", "btn btn-danger");
 				Leave.type = "button";
 				Leave.addEventListener("click", async () => {
-					if (!confirm(`Leave "${List.name}"?`)) return;
+					if (!await confirm_action(
+						"Leave this list?",
+						`Leave "${List.name}"?`,
+						"Leave list"
+					)) return;
 					Leave.disabled = true;
 					Leave.setAttribute("aria-busy", "true");
 					Leave.textContent = "Leaving...";
