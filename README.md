@@ -32,12 +32,6 @@ Choose **Focus** on any task, set **Duration (min)** to a whole number from 1 to
 
 For the defense, choose a 1-minute session, start it, pause it, refresh, and resume until the sprout blooms. A running session saves its end time, so refreshing the page or backgrounding the tab does not restart the countdown. A paused session saves its remaining time. The timer is stored per signed-in account in this browser and makes no database requests. Switching to another list closes the focus timer and clears the session.
 
-Run the timer and task-save tests with Node.js 24:
-
-```sh
-node --test
-```
-
 # Images taken from the website
 
 <div align="center">

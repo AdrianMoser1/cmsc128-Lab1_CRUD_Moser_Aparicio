@@ -1,4 +1,5 @@
 import { confirm_action } from "./confirm_action.js";
+import { show_toast } from "./toast.js";
 import {
 	FOCUS_MINUTE_MS,
 	extend_focus_timer,
@@ -43,10 +44,21 @@ export function setup_focus_timer(UserId) {
 	const MoreMinutes = document.getElementById("focusCompletionMinutes");
 	const Finish = document.getElementById("finishFocusBtn");
 	const StorageKey = `todo_aoi_focus_timer:${UserId}`;
+	const Alarm = new Audio("./audio/alarmsound.mp3");
 	let CanSave = true;
 	let State = load_timer();
 	let Tick = null;
 	let CompletionOffered = false;
+
+	function update_state(Next) {
+		const Expired = State?.status === "running" && Next?.status === "complete";
+		State = Next;
+		if (!Expired) return;
+		Alarm.currentTime = 0;
+		Alarm.play().catch(() => {
+			show_toast("The focus timer alarm could not be played.", "error");
+		});
+	}
 
 	function load_timer() {
 		try {
@@ -58,7 +70,7 @@ export function setup_focus_timer(UserId) {
 	}
 
 	function save_timer(Next) {
-		State = Next;
+		update_state(Next);
 		try {
 			if (State) localStorage.setItem(StorageKey, JSON.stringify(State));
 			else localStorage.removeItem(StorageKey);
@@ -76,7 +88,7 @@ export function setup_focus_timer(UserId) {
 
 	function render_timer() {
 		const Now = Date.now();
-		State = get_focus_timer(State, Now);
+		update_state(get_focus_timer(State, Now));
 		if (State?.status !== "complete") {
 			CompletionOffered = false;
 			if (CompletionDialog.open) CompletionDialog.close();
@@ -231,7 +243,7 @@ export function setup_focus_timer(UserId) {
 
 	window.addEventListener("storage", (Event) => {
 		if (Event.key !== StorageKey && Event.key !== null) return;
-		State = load_timer();
+		update_state(load_timer());
 		sync_duration();
 		render_timer();
 	});
