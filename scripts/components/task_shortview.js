@@ -1,7 +1,8 @@
 import { open_task_popup } from "./task_popup.js";
 import { delete_task } from "./delete_task.js";
-import { render_task_tally } from "./task_tally.js";
+import { refresh_task_view } from "./task_tally.js";
 import { update_task } from "../dependencies/db_fetch.js";
+import { show_toast } from "./toast.js";
 
 export function create_task_shortview(Task) {
 	const TaskCard = document.createElement("article");
@@ -9,20 +10,26 @@ export function create_task_shortview(Task) {
 	const CreatedAt = Task.created_at || Task.start_date || "";
 	const CreatedAtLabel = format_created_at(CreatedAt);
 	TaskCard.className = "task-card";
-	TaskCard.tabIndex = 0;
-	TaskCard.setAttribute("role", "button");
+	TaskCard.dataset.taskId = String(Task.id || Task.uid);
 	TaskCard.dataset.priority = Task.priority || "Med";
 	TaskCard.dataset.tag = Tag;
 	TaskCard.dataset.dueDate = Task.due_date || "";
 	TaskCard.dataset.createdAt = CreatedAt;
-	TaskCard.dataset.completed = Task.completed ? "true" : "false";
-	TaskCard.classList.toggle("is-completed", Boolean(Task.completed));
-	TaskCard.classList.toggle("is-overdue", is_overdue(Task));
 	Task.shortview = TaskCard;
+	TaskCard.taskData = Task;
 	TaskCard.innerHTML = `
+		<label class="task-select-wrap">
+			<input type="checkbox" class="task-select">
+			<span class="task-select-mark" aria-hidden="true"></span>
+		</label>
 		<button type="button" class="task-check" aria-label="${Task.completed ? "Mark task incomplete" : "Mark task complete"}" aria-pressed="${Boolean(Task.completed)}">✓</button>
 		<div class="task-body">
-			<p class="task-title">${escape_html(Task.title)}</p>
+			<button type="button" class="task-title-edit">
+				<span class="task-title">${escape_html(Task.title)}</span>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16z"></path>
+				</svg>
+			</button>
 			<div class="task-meta">
 				<span class="task-due">${escape_html(format_due(Task.due_date, Task.due_time))}</span>
 				<span class="badge">${escape_html(Task.priority || "Med")}</span>
@@ -35,38 +42,52 @@ export function create_task_shortview(Task) {
 		</div>
 	`;
 
-	TaskCard.addEventListener("click", () => open_task_popup(Task));
-	TaskCard.querySelector(".task-check").addEventListener("click", async (Event) => {
-		Event.stopPropagation();
+	TaskCard.querySelector(".task-select").setAttribute("aria-label", `Select task: ${Task.title}`);
+	TaskCard.querySelector(".task-title-edit").setAttribute("aria-label", `Edit task: ${Task.title}`);
+	render_task_completion(Task);
+	TaskCard.querySelector(".task-title-edit").addEventListener("click", () => open_task_popup(Task));
+	TaskCard.querySelector(".task-check").addEventListener("click", async () => {
 		const PreviousCompleted = Task.completed;
 		Task.completed = !Task.completed;
-		TaskCard.dataset.completed = Task.completed ? "true" : "false";
-		TaskCard.classList.toggle("is-completed", Task.completed);
-		TaskCard.classList.toggle("is-overdue", is_overdue(Task));
-		TaskCard.hidden = Task.completed && !document.getElementById("showCompleted")?.checked;
-		Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
-		Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
+		render_task_completion(Task);
+		const Controls = [...TaskCard.querySelectorAll("button, input")];
+		Controls.forEach((Control) => { Control.disabled = true; });
+		TaskCard.setAttribute("aria-busy", "true");
+		TaskCard.closest(".task-list")?.dispatchEvent(new Event("taskviewchange"));
 		try {
-			await update_task(Task);
-			render_task_tally();
+			await update_task(Task, { completed: Task.completed });
+			refresh_task_view();
+			show_toast(Task.completed ? "Task completed." : "Task reopened.");
 		} catch (Error) {
 			console.error(Error);
 			Task.completed = PreviousCompleted;
-			TaskCard.dataset.completed = Task.completed ? "true" : "false";
-			TaskCard.classList.toggle("is-completed", Task.completed);
-			TaskCard.classList.toggle("is-overdue", is_overdue(Task));
-			TaskCard.hidden = false;
-			Event.currentTarget.setAttribute("aria-pressed", String(Task.completed));
-			Event.currentTarget.setAttribute("aria-label", Task.completed ? "Mark task incomplete" : "Mark task complete");
-			alert(`The task could not be updated.\n\n${Error.message}`);
+			render_task_completion(Task);
+			refresh_task_view();
+			show_toast("Task could not be updated. Check your connection and try again.", "error");
+		} finally {
+			Controls.forEach((Control) => { Control.disabled = false; });
+			TaskCard.removeAttribute("aria-busy");
+			TaskCard.closest(".task-list")?.dispatchEvent(new Event("taskviewchange"));
 		}
 	});
-	TaskCard.querySelector(".delete-btn").addEventListener("click", (Event) => {
-		Event.stopPropagation();
+	TaskCard.querySelector(".delete-btn").addEventListener("click", () => {
 		delete_task(Task);
 	});
 
 	return TaskCard;
+}
+
+export function render_task_completion(Task) {
+	const TaskCard = Task.shortview;
+	if (!TaskCard) return;
+
+	const IsCompleted = Boolean(Task.completed);
+	TaskCard.dataset.completed = String(IsCompleted);
+	TaskCard.classList.toggle("is-completed", IsCompleted);
+	TaskCard.classList.toggle("is-overdue", is_overdue(Task));
+	const CheckButton = TaskCard.querySelector(".task-check");
+	CheckButton.setAttribute("aria-pressed", String(IsCompleted));
+	CheckButton.setAttribute("aria-label", IsCompleted ? "Mark task incomplete" : "Mark task complete");
 }
 
 function normalize_tag(Tag) {
