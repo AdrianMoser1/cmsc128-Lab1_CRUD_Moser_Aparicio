@@ -22,16 +22,9 @@ export async function delete_tasks(Tasks) {
 
 	const Count = PendingTasks.length;
 	const Title = Count === 1 ? "Delete this task?" : `Delete ${Count} selected tasks?`;
-	const Message = document.createDocumentFragment();
-	Message.append(
-		Count === 1
-			? `"${PendingTasks[0].title}" will be permanently deleted after a 10-second undo window.`
-			: `${Count} tasks will be permanently deleted after a 10-second undo window.`,
-		document.createElement("br")
-	);
-	const Warning = document.createElement("strong");
-	Warning.textContent = "Deleted tasks cannot be recovered.";
-	Message.append(Warning);
+	const Message = Count === 1
+		? `"${PendingTasks[0].title}" will be permanently deleted after a 10-second undo window.`
+		: `${Count} tasks will be permanently deleted after a 10-second undo window.`;
 	if (!await confirm_action(Title, Message, Count === 1 ? "Delete task" : "Delete tasks")) return;
 
 	start_delete_countdown(PendingTasks);
@@ -84,10 +77,6 @@ function start_delete_countdown(Tasks) {
 			return [Cards[Index]];
 		});
 		UndoDialog.remove();
-		const DeletedIds = Results.flatMap((Result, Index) =>
-			Result.status === "fulfilled" ? [Cards[Index].Card.dataset.taskId] : []
-		);
-		if (DeletedIds.length) TaskList.dispatchEvent(new CustomEvent("tasksdeleted", { detail: DeletedIds }));
 
 		if (FailedTasks.length) {
 			restore_tasks(FailedTasks, TaskList, ListId);
