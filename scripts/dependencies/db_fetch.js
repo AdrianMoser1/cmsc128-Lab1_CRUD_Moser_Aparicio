@@ -29,11 +29,11 @@ export async function insert_task(Task) {
 // Filters by task id only: in a shared list the editor is not the creator, so a
 // user_id filter would wrongly block members. RLS decides who may touch the row.
 // user_id / list_id are deliberately NOT in the PATCH body, so editing never changes ownership.
-export async function update_task(Task) {
+export async function update_task(Task, Fields = task_to_row(Task)) {
 	const TaskId = encodeURIComponent(Task.id || Task.uid);
 	const Rows = await supabase_request(`tasks?id=eq.${TaskId}`, {
 		method: "PATCH",
-		body: JSON.stringify(task_to_row(Task))
+		body: JSON.stringify(Fields)
 	});
 	if (!Rows?.length) throw new Error("Task not found or you no longer have access to it.");
 	return row_to_task(Rows[0]);

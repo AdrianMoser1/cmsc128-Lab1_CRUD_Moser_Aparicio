@@ -17,8 +17,8 @@ which requires node.js
 
 - **Update task** - Changes an existing task's details through the edit form in `task_popup.js`. The update request is sent by `update_task()` in `db_fetch.js`, and completing or uncompleting a task is handled in `task_shortview.js`.
 
-- **Delete task** - Removes an existing task through `delete_task()` in `delete_task.js`. The database deletion is handled by `remove_task()` in `db_fetch.js`. Undo logic
-is mediated by `undo.js` before going through with `delete_task.js`.
+- **Delete task** - `delete_task()` in `delete_task.js` asks for confirmation, then provides a 10-second undo window before calling `remove_task()` in `db_fetch.js`. The dashboard also supports selecting visible tasks to complete or delete together.
+- **Appearance** - The dashboard's Appearance menu offers five color themes that tint the background and accent in both light and dark mode. Preferences are stored in the browser and shared across the app's pages.
 
 # Images taken from the website
 

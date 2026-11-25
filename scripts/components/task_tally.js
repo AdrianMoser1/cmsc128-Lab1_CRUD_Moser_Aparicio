@@ -43,9 +43,17 @@ function summary_item(Label, Count, ClassName = "") {
 }
 
 export function setup_task_view() {
-	document.getElementById("filterTag")?.addEventListener("change", refresh_task_view);
-	document.getElementById("sortTasks")?.addEventListener("change", refresh_task_view);
-	document.getElementById("showCompleted")?.addEventListener("change", refresh_task_view);
+	const TagFilter = document.getElementById("filterTag");
+	const CompletedFilter = document.getElementById("showCompleted");
+	TagFilter.addEventListener("change", refresh_task_view);
+	document.getElementById("sortTasks").addEventListener("change", refresh_task_view);
+	CompletedFilter.addEventListener("change", refresh_task_view);
+	document.getElementById("showAllTasksBtn").addEventListener("click", () => {
+		TagFilter.value = "All";
+		CompletedFilter.checked = true;
+		TagFilter.dispatchEvent(new Event("change"));
+		document.querySelector("#taskList .task-card:not([hidden]) .task-title-edit")?.focus();
+	});
 	refresh_task_view();
 }
 
@@ -73,5 +81,11 @@ export function refresh_task_view() {
 		return FirstValue.localeCompare(SecondValue);
 	});
 	TaskCards.forEach((TaskCard) => TaskList.appendChild(TaskCard));
+	const CanShowEmptyState = !TaskList.inert && document.getElementById("taskLoadError").hidden;
+	document.getElementById("emptyState").hidden = !CanShowEmptyState || TaskCards.length > 0;
+	document.getElementById("filteredState").hidden = !CanShowEmptyState ||
+		TaskCards.length === 0 || TaskCards.some((Card) => !Card.hidden);
+
 	render_task_tally();
+	TaskList.dispatchEvent(new Event("taskviewchange"));
 }
