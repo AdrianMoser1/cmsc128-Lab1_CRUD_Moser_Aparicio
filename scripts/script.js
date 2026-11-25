@@ -7,7 +7,6 @@ import { refresh_task_view } from "./components/task_tally.js";
 import { setup_list_switcher } from "./components/list_switcher.js";
 import { is_task_removed } from "./components/delete_task.js";
 import { setup_bulk_actions } from "./components/bulk_actions.js";
-import { setup_focus_timer } from "./components/focus_timer.js";
 import { show_toast } from "./components/toast.js";
 
 const Session = await require_auth_or_redirect();
@@ -39,7 +38,6 @@ if (Session) {
 	setup_add_task();
 	setup_task_view();
 	setup_bulk_actions();
-	setup_focus_timer(User.id);
 	document.getElementById("retryTasksBtn").addEventListener("click", () => {
 		document.getElementById("listSelect").focus();
 		load_tasks();
