@@ -20,6 +20,18 @@ which requires node.js
 - **Delete task** - `delete_task()` in `delete_task.js` asks for confirmation, then provides a 10-second undo window before calling `remove_task()` in `db_fetch.js`. The dashboard also supports selecting visible tasks to complete or delete together.
 - **Appearance** - The dashboard's Appearance menu offers five color themes that tint the background and accent in both light and dark mode. Preferences are stored in the browser and shared across the app's pages.
 
+## Activity 4 bonus · Task-linked focus timer
+
+Choose **Focus** on any task, then **Start** for a 25-minute study session. Pause and resume whenever you need, or reset the timer to 25 minutes. The sprout grows with the session and blooms at completion. The timer and completion message also work with reduced motion enabled.
+
+For the defense, start a timer, pause it, refresh, and resume. A running session saves its end time, so refreshing the page or backgrounding the tab does not restart the countdown. A paused session saves its remaining time. The timer is stored per signed-in account in this browser and makes no database requests. Switching to another list closes the focus timer and clears the session.
+
+Run the timer state tests with Node.js 22 or newer:
+
+```sh
+node --test tests/focus_timer.test.mjs
+```
+
 # Images taken from the website
 
 <div align="center">
