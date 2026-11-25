@@ -727,7 +727,7 @@ body {
 }
 
 .focus-clock {
-  min-width: 5ch;
+  min-width: 6ch;
   font-size: clamp(28px, 4vw, 36px);
   font-weight: 700;
   line-height: 1;
@@ -737,7 +737,33 @@ body {
 .focus-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: 8px;
+}
+
+.focus-duration {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.focus-duration input {
+  width: 94px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 600 16px var(--font-body);
+}
+
+.focus-duration input:disabled {
+  background: var(--hover-bg);
+  color: var(--ink-soft);
 }
 
 .focus-actions .btn { padding-inline: 12px; }

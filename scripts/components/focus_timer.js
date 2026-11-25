@@ -1,12 +1,13 @@
 import { confirm_action } from "./confirm_action.js";
 import {
-	FOCUS_DURATION_MS,
+	FOCUS_MINUTE_MS,
 	get_focus_timer,
 	get_remaining_ms,
 	pause_focus_timer,
 	read_focus_timer,
 	reset_focus_timer,
 	resume_focus_timer,
+	set_focus_timer_duration,
 	start_focus_timer
 } from "./focus_timer_state.js";
 
@@ -17,16 +18,19 @@ const ToggleLabels = {
 	complete: "Start again"
 };
 const SessionMessages = {
-	ready: "Start when you’re ready to give this task your attention.",
-	running: "One task at a time. You can pause whenever you need.",
-	paused: "Take your time. Pick up where you left off.",
+	ready: "Choose 1–120 minutes, then start when you’re ready.",
+	running: "One task at a time. Reset to change the duration.",
+	paused: "Resume when you’re ready, or reset to change the duration.",
 	complete: "Good work. Take a short break before your next session."
 };
 
 export function setup_focus_timer(UserId) {
 	const TaskList = document.getElementById("taskList");
 	const Panel = document.getElementById("focusTimer");
+	const Heading = document.getElementById("focusTimerHeading");
 	const TaskTitle = document.getElementById("focusTimerTask");
+	const Controls = document.getElementById("focusTimerControls");
+	const Duration = document.getElementById("focusTimerDuration");
 	const Clock = document.getElementById("focusTimerClock");
 	const Toggle = document.getElementById("focusTimerToggle");
 	const Reset = document.getElementById("focusTimerReset");
@@ -55,7 +59,12 @@ export function setup_focus_timer(UserId) {
 		} catch {
 			CanSave = false;
 		}
+		sync_duration();
 		render_timer();
+	}
+
+	function sync_duration() {
+		if (State) Duration.value = String(State.durationMs / FOCUS_MINUTE_MS);
 	}
 
 	function render_timer() {
@@ -75,12 +84,14 @@ export function setup_focus_timer(UserId) {
 		const Status = SessionMessages[State.status] + (CanSave ? "" : " This timer cannot be saved in this browser.");
 		if (Panel.dataset.state !== State.status) Panel.dataset.state = State.status;
 		if (TaskTitle.textContent !== State.taskTitle) TaskTitle.textContent = State.taskTitle;
-		if (Clock.textContent !== Time) {
-			Clock.textContent = Time;
-			Panel.style.setProperty("--focus-progress", String(1 - Remaining * 1000 / FOCUS_DURATION_MS));
+		if (Clock.textContent !== Time) Clock.textContent = Time;
+		const Progress = String(1 - Remaining * 1000 / State.durationMs);
+		if (Panel.style.getPropertyValue("--focus-progress") !== Progress) {
+			Panel.style.setProperty("--focus-progress", Progress);
 		}
 		if (Toggle.textContent !== ToggleLabels[State.status]) Toggle.textContent = ToggleLabels[State.status];
 		if (Message.textContent !== Status) Message.textContent = Status;
+		Duration.disabled = Running || State.status === "paused";
 		Reset.disabled = State.status === "ready";
 	}
 
@@ -112,24 +123,36 @@ export function setup_focus_timer(UserId) {
 			)) return;
 			save_timer(reset_focus_timer(Next));
 		}
-		Toggle.focus();
+		Heading.focus();
 	});
 
-	Toggle.addEventListener("click", () => {
+	Duration.addEventListener("change", () => {
+		const Next = set_focus_timer_duration(State, Duration.valueAsNumber);
+		if (Next !== State) save_timer(Next);
+	});
+
+	Controls.addEventListener("submit", (Event) => {
+		Event.preventDefault();
 		const Now = Date.now();
 		const Current = get_focus_timer(State, Now);
 		if (!Current) return;
-		if (Current.status === "running") save_timer(pause_focus_timer(Current, Now));
-		else {
-			const Ready = Current.status === "complete" ? reset_focus_timer(Current) : Current;
-			save_timer(resume_focus_timer(Ready, Now));
+		if (State.status === "running") {
+			save_timer(pause_focus_timer(Current, Now));
+			return;
 		}
+		if (Current.status === "paused") {
+			save_timer(resume_focus_timer(Current, Now));
+			return;
+		}
+		if (!Duration.reportValidity()) return;
+		const Ready = reset_focus_timer(set_focus_timer_duration(Current, Duration.valueAsNumber));
+		save_timer(resume_focus_timer(Ready, Now));
 	});
 
 	Reset.addEventListener("click", async () => {
-		if (!await confirm_change("Reset focus timer?", "This will return the timer to 25 minutes.", "Reset timer")) return;
+		if (!await confirm_change("Reset focus timer?", "This will return the timer to your chosen duration.", "Reset timer")) return;
 		save_timer(reset_focus_timer(State));
-		Toggle.focus();
+		Heading.focus();
 	});
 
 	Close.addEventListener("click", async () => {
@@ -165,10 +188,12 @@ export function setup_focus_timer(UserId) {
 	window.addEventListener("storage", (Event) => {
 		if (Event.key !== StorageKey && Event.key !== null) return;
 		State = load_timer();
+		sync_duration();
 		render_timer();
 	});
 	document.addEventListener("visibilitychange", () => {
 		if (!document.hidden) render_timer();
 	});
+	sync_duration();
 	render_timer();
 }
