@@ -20,5 +20,5 @@ export function show_toast(Message, Kind = "success") {
 	ToastTimer = setTimeout(() => {
 		Toast.classList.remove("is-visible");
 		RemovalTimer = setTimeout(() => Toast.remove(), 220);
-	}, 6000);
+	}, 1000);
 }
