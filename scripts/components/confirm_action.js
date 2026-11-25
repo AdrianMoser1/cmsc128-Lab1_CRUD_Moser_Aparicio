@@ -23,7 +23,7 @@ export function confirm_action(TitleText, Message, ActionText) {
 
 		const Description = document.createElement("p");
 		Description.id = "actionConfirmDescription";
-		Description.textContent = Message;
+		Description.append(Message);
 
 		const Actions = document.createElement("div");
 		Actions.className = "dialog-actions";

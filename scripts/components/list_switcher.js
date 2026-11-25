@@ -84,6 +84,11 @@ export async function setup_list_switcher(UserId, OnListChange) {
 		return Valid;
 	}
 
+	function notify_list_change() {
+		document.getElementById("taskList").dispatchEvent(new Event("activelistchange"));
+		OnListChange();
+	}
+
 	async function reload_lists(PreferredValue) {
 		Select.disabled = true;
 		Select.replaceChildren(new Option("Loading lists...", ""));
@@ -187,7 +192,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 					const Created = await create_list(Input.value);
 					Dialog.close();
 					await reload_lists(Created.id);
-					OnListChange();
+					notify_list_change();
 					show_toast("List created.");
 				} catch (Error) {
 					console.error(Error);
@@ -303,9 +308,10 @@ export async function setup_list_switcher(UserId, OnListChange) {
 					Delete.textContent = "Deleting...";
 					try {
 						await delete_list(List.id);
+						document.getElementById("taskList").dispatchEvent(new CustomEvent("listdeleted", { detail: String(List.id) }));
 						Dialog.close();
 						await reload_lists(PERSONAL);
-						OnListChange();
+						notify_list_change();
 						show_toast("List deleted.");
 					} catch (Error) {
 						show_error(Error.userMessage || "Could not delete the list. Please try again.");
@@ -332,7 +338,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 						await remove_list_member(List.id, UserId);
 						Dialog.close();
 						await reload_lists(PERSONAL);
-						OnListChange();
+						notify_list_change();
 						show_toast("You left the list.");
 					} catch (Error) {
 						show_error(Error.userMessage || "Could not leave the list.");
@@ -349,7 +355,7 @@ export async function setup_list_switcher(UserId, OnListChange) {
 	// ---- switching ---------------------------------------------------------
 	Select.addEventListener("change", () => {
 		apply_selection(Select.value);
-		OnListChange();
+		notify_list_change();
 	});
 
 	// Initial load. Does NOT call OnListChange: script.js loads the first batch of tasks itself.

@@ -20,6 +20,24 @@ which requires node.js
 - **Delete task** - `delete_task()` in `delete_task.js` asks for confirmation, then provides a 10-second undo window before calling `remove_task()` in `db_fetch.js`. The dashboard also supports selecting visible tasks to complete or delete together.
 - **Appearance** - The dashboard's Appearance menu offers five color themes that tint the background and accent in both light and dark mode. Preferences are stored in the browser and shared across the app's pages.
 
+## Activity 4 backend refactor
+
+List initialization fetches the list records without loading each owned list’s member roster. In a mocked comparison with five owned lists, the list picker went from **6 requests to 1** (83% fewer). Opening **Members** still fetches the roster on demand. To verify on a signed-in account, reload with the browser Network tab open and compare the `lists` and `get_list_members` requests.
+
+Task saves capture the destination list at submission. A delayed response stays associated with that list even if you switch lists before it arrives.
+
+## Activity 4 bonus · Task-linked focus timer
+
+Choose **Focus** on any task, set **Duration (min)** to a whole number from 1 to 120 (default 25), and select **Start**. Pause and resume whenever you need. Reset returns the timer to its chosen duration and lets you adjust it before starting again. The sprout grows with the session and blooms at completion. When time runs out, **Need more time?** lets you add 1 to 120 minutes to the same task or finish the timer. An extension keeps your original Reset duration. The timer and completion prompt also work with reduced motion enabled.
+
+For the defense, choose a 1-minute session, start it, pause it, refresh, and resume until the sprout blooms. A running session saves its end time, so refreshing the page or backgrounding the tab does not restart the countdown. A paused session saves its remaining time. The timer is stored per signed-in account in this browser and makes no database requests. Switching to another list closes the focus timer and clears the session.
+
+Run the timer and task-save tests with Node.js 24:
+
+```sh
+node --test
+```
+
 # Images taken from the website
 
 <div align="center">

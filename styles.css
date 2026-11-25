@@ -606,6 +606,179 @@ body {
 .summary-item.med .summary-item-count { color: var(--pri-med); }
 .summary-item.high .summary-item-count { color: var(--pri-high); }
 
+/* Focus timer */
+.focus-timer {
+  --focus-progress: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px 64px 16px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.focus-timer[hidden] { display: none; }
+
+.focus-illustration {
+  position: relative;
+  height: 88px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+}
+
+.focus-illustration::after {
+  position: absolute;
+  left: calc(50% - 20px);
+  bottom: 16px;
+  width: 40px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.4;
+  content: "";
+}
+
+.focus-sprout {
+  position: absolute;
+  left: calc(50% - 1.5px);
+  bottom: 17px;
+  width: 3px;
+  height: 46px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scale(calc(0.34 + var(--focus-progress) * 0.66));
+  transform-origin: center bottom;
+  transition: transform 700ms ease-out;
+}
+
+.focus-sprout::before,
+.focus-sprout::after {
+  position: absolute;
+  width: 23px;
+  height: 12px;
+  background: var(--accent);
+  content: "";
+}
+
+.focus-sprout::before {
+  right: 100%;
+  bottom: 14px;
+  border-radius: 0 12px 0 12px;
+  transform: rotate(22deg);
+  transform-origin: right center;
+}
+
+.focus-sprout::after {
+  left: 100%;
+  bottom: 24px;
+  border-radius: 12px 0 12px 0;
+  transform: rotate(-22deg);
+  transform-origin: left center;
+}
+
+.focus-blossom {
+  position: absolute;
+  top: -4px;
+  left: -2.5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--paper-raised);
+  box-shadow: 0 -6px var(--accent), 6px -2px var(--accent), 4px 5px var(--accent),
+    -4px 5px var(--accent), -6px -2px var(--accent);
+  opacity: 0;
+  transform: scale(0.45);
+  transition: opacity 450ms ease-out, transform 450ms ease-out;
+}
+
+.focus-timer[data-state="complete"] .focus-blossom {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.focus-copy h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.focus-task {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.focus-message {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.focus-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.focus-clock {
+  min-width: 6ch;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.focus-duration {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.focus-duration input {
+  width: 94px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 600 16px var(--font-body);
+}
+
+.focus-duration input:disabled {
+  background: var(--hover-bg);
+  color: var(--ink-soft);
+}
+
+.focus-actions .btn { padding-inline: 12px; }
+
+.focus-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  padding: 0;
+  border-color: transparent;
+  font-size: 22px;
+  line-height: 1;
+}
+
 /* 
    Task list + cards
  */
@@ -915,6 +1088,11 @@ body {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+}
+
+.task-focus-btn {
+  padding-inline: 12px;
+  color: var(--accent);
 }
 
 .icon-btn {
@@ -1228,6 +1406,13 @@ input[type="password"]::-ms-clear {
   overflow-wrap: anywhere;
 }
 .confirm-dialog .dialog-actions { justify-content: flex-end; margin-top: 0; }
+
+.focus-completion-form {
+  display: grid;
+  gap: 16px;
+}
+
+.focus-completion-form .dialog-actions { flex-wrap: wrap; }
 
 /* 
    Toast
@@ -1611,6 +1796,15 @@ input[type="password"]::-ms-clear {
     gap: 8px 10px;
   }
 
+  .focus-timer {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .focus-copy { padding-inline-end: 40px; }
+  .focus-controls { grid-column: 1 / -1; justify-content: space-between; }
+
   .task-card {
     gap: 10px;
     padding: 13px 12px;
@@ -1679,6 +1873,8 @@ input[type="password"]::-ms-clear {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .focus-sprout { transform: none; }
+
   *,
   *::before,
   *::after {
@@ -1687,4 +1883,3 @@ input[type="password"]::-ms-clear {
     transition-duration: 0.01ms !important;
   }
 }
- 
