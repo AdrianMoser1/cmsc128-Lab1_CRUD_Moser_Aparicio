@@ -1,6 +1,7 @@
 import { confirm_action } from "./confirm_action.js";
 import {
 	FOCUS_MINUTE_MS,
+	extend_focus_timer,
 	get_focus_timer,
 	get_remaining_ms,
 	pause_focus_timer,
@@ -15,13 +16,13 @@ const ToggleLabels = {
 	ready: "Start",
 	running: "Pause",
 	paused: "Resume",
-	complete: "Start again"
+	complete: "More time"
 };
 const SessionMessages = {
 	ready: "Choose 1–120 minutes, then start when you’re ready.",
 	running: "One task at a time. Reset to change the duration.",
 	paused: "Resume when you’re ready, or reset to change the duration.",
-	complete: "Good work. Take a short break before your next session."
+	complete: "Good work. Add more time or take a short break."
 };
 
 export function setup_focus_timer(UserId) {
@@ -36,10 +37,16 @@ export function setup_focus_timer(UserId) {
 	const Reset = document.getElementById("focusTimerReset");
 	const Close = document.getElementById("focusTimerClose");
 	const Message = document.getElementById("focusTimerMessage");
+	const CompletionDialog = document.getElementById("focusCompletionDialog");
+	const CompletionForm = document.getElementById("focusCompletionForm");
+	const CompletionTask = document.getElementById("focusCompletionTask");
+	const MoreMinutes = document.getElementById("focusCompletionMinutes");
+	const Finish = document.getElementById("finishFocusBtn");
 	const StorageKey = `todo_aoi_focus_timer:${UserId}`;
 	let CanSave = true;
 	let State = load_timer();
 	let Tick = null;
+	let CompletionOffered = false;
 
 	function load_timer() {
 		try {
@@ -70,6 +77,10 @@ export function setup_focus_timer(UserId) {
 	function render_timer() {
 		const Now = Date.now();
 		State = get_focus_timer(State, Now);
+		if (State?.status !== "complete") {
+			CompletionOffered = false;
+			if (CompletionDialog.open) CompletionDialog.close();
+		}
 		const Running = State?.status === "running";
 		if (Running && Tick === null) Tick = window.setInterval(render_timer, 250);
 		if (!Running && Tick !== null) {
@@ -85,14 +96,25 @@ export function setup_focus_timer(UserId) {
 		if (Panel.dataset.state !== State.status) Panel.dataset.state = State.status;
 		if (TaskTitle.textContent !== State.taskTitle) TaskTitle.textContent = State.taskTitle;
 		if (Clock.textContent !== Time) Clock.textContent = Time;
-		const Progress = String(1 - Remaining * 1000 / State.durationMs);
+		const Progress = String(1 - Remaining * 1000 / State.intervalMs);
 		if (Panel.style.getPropertyValue("--focus-progress") !== Progress) {
 			Panel.style.setProperty("--focus-progress", Progress);
 		}
 		if (Toggle.textContent !== ToggleLabels[State.status]) Toggle.textContent = ToggleLabels[State.status];
 		if (Message.textContent !== Status) Message.textContent = Status;
-		Duration.disabled = Running || State.status === "paused";
+		Duration.disabled = State.status !== "ready";
 		Reset.disabled = State.status === "ready";
+		offer_completion();
+	}
+
+	function offer_completion(Reopen = false) {
+		if (State?.status !== "complete" || (CompletionOffered && !Reopen) ||
+			document.hidden || document.querySelector("dialog[open]")) return;
+
+		CompletionTask.textContent = State.taskTitle;
+		MoreMinutes.value = MoreMinutes.defaultValue;
+		CompletionDialog.showModal();
+		CompletionOffered = true;
 	}
 
 	async function confirm_change(Title, Description, Action) {
@@ -144,8 +166,12 @@ export function setup_focus_timer(UserId) {
 			save_timer(resume_focus_timer(Current, Now));
 			return;
 		}
+		if (Current.status === "complete") {
+			offer_completion(true);
+			return;
+		}
 		if (!Duration.reportValidity()) return;
-		const Ready = reset_focus_timer(set_focus_timer_duration(Current, Duration.valueAsNumber));
+		const Ready = set_focus_timer_duration(Current, Duration.valueAsNumber);
 		save_timer(resume_focus_timer(Ready, Now));
 	});
 
@@ -155,12 +181,30 @@ export function setup_focus_timer(UserId) {
 		Heading.focus();
 	});
 
-	Close.addEventListener("click", async () => {
-		if (!await confirm_change("End this focus session?", "Your current timer progress will be cleared.", "End session")) return;
+	function finish_timer() {
 		const TaskId = State?.taskId;
 		save_timer(null);
 		focus_task_card(TaskId);
+	}
+
+	Close.addEventListener("click", async () => {
+		if (!await confirm_change("End this focus session?", "Your current timer progress will be cleared.", "End session")) return;
+		finish_timer();
 	});
+
+	CompletionForm.addEventListener("submit", (Event) => {
+		Event.preventDefault();
+		const Next = extend_focus_timer(State, MoreMinutes.valueAsNumber);
+		if (Next === State) return;
+		save_timer(Next);
+		Toggle.focus();
+	});
+
+	Finish.addEventListener("click", () => {
+		if (State?.status === "complete") finish_timer();
+	});
+
+	document.addEventListener("close", () => offer_completion(), true);
 
 	TaskList.addEventListener("taskviewchange", () => {
 		if (!State) return;
@@ -170,7 +214,7 @@ export function setup_focus_timer(UserId) {
 	});
 
 	function dismiss_deleted_task() {
-		const FocusWasInPanel = Panel.contains(document.activeElement);
+		const FocusWasInPanel = CompletionDialog.open || Panel.contains(document.activeElement);
 		save_timer(null);
 		if (FocusWasInPanel) focus_task_card();
 	}

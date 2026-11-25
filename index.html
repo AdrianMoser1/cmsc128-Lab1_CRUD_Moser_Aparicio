@@ -152,6 +152,21 @@
       </button>
     </section>
 
+    <dialog class="confirm-dialog" id="focusCompletionDialog" aria-labelledby="focusCompletionHeading" aria-describedby="focusCompletionDescription">
+      <h2 id="focusCompletionHeading" tabindex="-1" autofocus>Need more time?</h2>
+      <p id="focusCompletionDescription">You’ve finished a focus block for <strong id="focusCompletionTask">this task</strong>.</p>
+      <form class="focus-completion-form" id="focusCompletionForm" method="dialog">
+        <label class="focus-duration" for="focusCompletionMinutes">
+          Extra minutes
+          <input id="focusCompletionMinutes" type="number" inputmode="numeric" min="1" max="120" step="1" value="5" required>
+        </label>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" id="finishFocusBtn" type="button">Finish timer</button>
+          <button class="btn btn-primary" type="submit">Add time</button>
+        </div>
+      </form>
+    </dialog>
+
     <section class="bulk-toolbar" aria-label="Quick task selection">
       <label class="bulk-select-label" for="selectVisibleTasks">
         <input id="selectVisibleTasks" type="checkbox">

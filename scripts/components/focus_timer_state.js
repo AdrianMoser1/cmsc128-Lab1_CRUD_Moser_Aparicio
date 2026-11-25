@@ -10,7 +10,7 @@ export function read_focus_timer(Raw, Now = Date.now()) {
 	}
 
 	if (!Saved) return null;
-	const { status, remainingMs, endsAt, durationMs = FOCUS_DURATION_MS } = Saved;
+	const { status, remainingMs, endsAt, durationMs = FOCUS_DURATION_MS, intervalMs = durationMs } = Saved;
 	const TaskId = normalize_id(Saved.taskId);
 	const ListId = normalize_id(Saved.listId);
 	const TaskTitle = normalize_title(Saved.taskTitle);
@@ -18,13 +18,14 @@ export function read_focus_timer(Raw, Now = Date.now()) {
 	if (TaskId === null || (Saved.listId != null && ListId === null)) return null;
 	if (!["running", "paused", "ready", "complete"].includes(status)) return null;
 	if (!Number.isSafeInteger(durationMs) || !valid_minutes(durationMs / FOCUS_MINUTE_MS)) return null;
-	if (!Number.isSafeInteger(remainingMs) || remainingMs < 0 || remainingMs > durationMs) return null;
+	if (!Number.isSafeInteger(intervalMs) || !valid_minutes(intervalMs / FOCUS_MINUTE_MS)) return null;
+	if (!Number.isSafeInteger(remainingMs) || remainingMs < 0 || remainingMs > intervalMs) return null;
 	if ((remainingMs === 0) !== (status === "complete")) return null;
-	if (status === "ready" && remainingMs !== durationMs) return null;
+	if (status === "ready" && (remainingMs !== durationMs || intervalMs !== durationMs)) return null;
 	if (status === "running" && (!Number.isSafeInteger(endsAt) || endsAt <= 0)) return null;
 	if (status !== "running" && endsAt !== null) return null;
 
-	return get_focus_timer({ taskId: TaskId, taskTitle: TaskTitle, listId: ListId, status, durationMs, remainingMs, endsAt }, Now);
+	return get_focus_timer({ taskId: TaskId, taskTitle: TaskTitle, listId: ListId, status, durationMs, intervalMs, remainingMs, endsAt }, Now);
 }
 
 export function start_focus_timer(Task, Now = Date.now()) {
@@ -37,6 +38,7 @@ export function start_focus_timer(Task, Now = Date.now()) {
 		listId: normalize_id(Task.list_id),
 		status: "running",
 		durationMs: FOCUS_DURATION_MS,
+		intervalMs: FOCUS_DURATION_MS,
 		remainingMs: FOCUS_DURATION_MS,
 		endsAt: Now + FOCUS_DURATION_MS
 	};
@@ -66,7 +68,7 @@ export function resume_focus_timer(State, Now = Date.now()) {
 
 export function reset_focus_timer(State) {
 	if (!State) return null;
-	return { ...State, status: "ready", remainingMs: State.durationMs, endsAt: null };
+	return { ...State, status: "ready", intervalMs: State.durationMs, remainingMs: State.durationMs, endsAt: null };
 }
 
 export function set_focus_timer_duration(State, Minutes) {
@@ -74,6 +76,12 @@ export function set_focus_timer_duration(State, Minutes) {
 	const Duration = Minutes * FOCUS_MINUTE_MS;
 	if (Duration === State.durationMs) return State;
 	return reset_focus_timer({ ...State, durationMs: Duration });
+}
+
+export function extend_focus_timer(State, Minutes, Now = Date.now()) {
+	if (State?.status !== "complete" || !valid_minutes(Minutes)) return State;
+	const Interval = Minutes * FOCUS_MINUTE_MS;
+	return { ...State, status: "running", intervalMs: Interval, remainingMs: Interval, endsAt: Now + Interval };
 }
 
 function valid_minutes(Minutes) {

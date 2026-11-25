@@ -1407,6 +1407,13 @@ input[type="password"]::-ms-clear {
 }
 .confirm-dialog .dialog-actions { justify-content: flex-end; margin-top: 0; }
 
+.focus-completion-form {
+  display: grid;
+  gap: 16px;
+}
+
+.focus-completion-form .dialog-actions { flex-wrap: wrap; }
+
 /* 
    Toast
  */
