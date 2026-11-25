@@ -841,7 +841,7 @@ body {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  cursor: default;
+  cursor: pointer;
   transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
 }
 
@@ -1427,8 +1427,7 @@ input[type="password"]::-ms-clear {
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
   z-index: 1000;
-  width: max-content;
-  max-width: min(440px, calc(100vw - 32px));
+  width: min(984px, calc(100vw - 56px));
   text-align: center;
 }
 .toast.is-visible {
@@ -1437,6 +1436,10 @@ input[type="password"]::-ms-clear {
 }
 .toast.is-success { background: #315F3C; }
 .toast.is-error { background: #8F3524; }
+
+@media (max-width: 600px) {
+  .toast { width: calc(100vw - 32px); }
+}
 
 /*
    Auth pages (Sign Up / Login / Profile)

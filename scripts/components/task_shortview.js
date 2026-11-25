@@ -45,6 +45,10 @@ export function create_task_shortview(Task) {
 	TaskCard.querySelector(".task-select").setAttribute("aria-label", `Select task: ${Task.title}`);
 	TaskCard.querySelector(".task-title-edit").setAttribute("aria-label", `Edit task: ${Task.title}`);
 	render_task_completion(Task);
+	TaskCard.addEventListener("click", (Event) => {
+		if (Event.target.closest("button, input, label, select, textarea, a")) return;
+		open_task_popup(Task);
+	});
 	TaskCard.querySelector(".task-title-edit").addEventListener("click", () => open_task_popup(Task));
 	TaskCard.querySelector(".task-check").addEventListener("click", async () => {
 		const PreviousCompleted = Task.completed;
