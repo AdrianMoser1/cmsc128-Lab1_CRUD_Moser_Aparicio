@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="images/TabIcon.ico" type="image/x-icon">
+<link rel="icon" href="images/TabIcon.ico" type="image/x-icon">
 <title>Todo Aoi</title>
 <script src="scripts/components/appearance.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -127,6 +128,46 @@
       <button class="btn btn-primary" id="addTaskBtn" type="button">+ Add task</button>
     </section>
     <section class="summary-strip" id="taskTally" aria-label="Task tally"></section>
+
+    <section class="focus-timer" id="focusTimer" aria-labelledby="focusTimerHeading" data-state="ready" hidden>
+      <div class="focus-illustration" aria-hidden="true">
+        <span class="focus-sprout"><span class="focus-blossom"></span></span>
+      </div>
+      <div class="focus-copy">
+        <h3 id="focusTimerHeading" tabindex="-1">Focus timer</h3>
+        <p class="focus-task" id="focusTimerTask"></p>
+        <p class="focus-message" id="focusTimerMessage" role="status">Choose 1–120 minutes, then start when you’re ready.</p>
+      </div>
+      <form class="focus-controls" id="focusTimerControls">
+        <div class="focus-clock" id="focusTimerClock" role="timer" aria-label="Time remaining">25:00</div>
+        <div class="focus-actions">
+          <label class="focus-duration" for="focusTimerDuration">
+            Duration (min)
+            <input id="focusTimerDuration" type="number" inputmode="numeric" min="1" max="120" step="1" value="25" required>
+          </label>
+          <button class="btn btn-primary" id="focusTimerToggle" type="submit">Start</button>
+          <button class="btn btn-ghost" id="focusTimerReset" type="button">Reset</button>
+        </div>
+      </form>
+      <button class="btn btn-ghost focus-close" id="focusTimerClose" type="button" aria-label="Close focus timer">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </section>
+
+    <dialog class="confirm-dialog" id="focusCompletionDialog" aria-labelledby="focusCompletionHeading" aria-describedby="focusCompletionDescription">
+      <h2 id="focusCompletionHeading" tabindex="-1" autofocus>Need more time?</h2>
+      <p id="focusCompletionDescription">You’ve finished a focus block for <strong id="focusCompletionTask">this task</strong>.</p>
+      <form class="focus-completion-form" id="focusCompletionForm" method="dialog">
+        <label class="focus-duration" for="focusCompletionMinutes">
+          Extra minutes
+          <input id="focusCompletionMinutes" type="number" inputmode="numeric" min="1" max="120" step="1" value="5" required>
+        </label>
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" id="finishFocusBtn" type="button">Finish timer</button>
+          <button class="btn btn-primary" type="submit">Add time</button>
+        </div>
+      </form>
+    </dialog>
 
     <section class="bulk-toolbar" aria-label="Quick task selection">
       <label class="bulk-select-label" for="selectVisibleTasks">

@@ -35,7 +35,7 @@ if (Session) {
 		}
 	});
 
-	setup_add_task();
+	setup_add_task(load_tasks);
 	setup_task_view();
 	setup_bulk_actions();
 	document.getElementById("retryTasksBtn").addEventListener("click", () => {

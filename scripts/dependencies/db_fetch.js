@@ -7,8 +7,8 @@ import { get_active_list_id } from "../components/active_list.js";
  *   Collaborative list -> list_id = <active list>  (RLS only returns rows if I'm a member)
  */
 export async function fetch_tasks() {
-	const UserId = await get_authenticated_user_id();
 	const ListId = get_active_list_id();
+	const UserId = await get_authenticated_user_id();
 	const Scope = ListId
 		? `list_id=eq.${encodeURIComponent(ListId)}`
 		: `list_id=is.null&user_id=eq.${encodeURIComponent(UserId)}`;
@@ -16,12 +16,11 @@ export async function fetch_tasks() {
 	return Rows.map(row_to_task);
 }
 
-export async function insert_task(Task) {
+export async function insert_task(Task, ListId = get_active_list_id()) {
 	const UserId = await get_authenticated_user_id();
 	const Rows = await supabase_request("tasks", {
 		method: "POST",
-		// user_id = who created it; list_id = the list currently open (null = Personal)
-		body: JSON.stringify({ ...task_to_row(Task), user_id: UserId, list_id: get_active_list_id() })
+		body: JSON.stringify({ ...task_to_row(Task), user_id: UserId, list_id: ListId })
 	});
 	return row_to_task(Rows[0]);
 }
