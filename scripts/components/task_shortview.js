@@ -38,11 +38,13 @@ export function create_task_shortview(Task) {
 			</div>
 		</div>
 		<div class="task-actions">
+			<button type="button" class="btn btn-ghost task-focus-btn" aria-controls="focusTimer">Focus</button>
 			<button type="button" class="icon-btn delete-btn">Delete</button>
 		</div>
 	`;
 
 	TaskCard.querySelector(".task-select").setAttribute("aria-label", `Select task: ${Task.title}`);
+	TaskCard.querySelector(".task-focus-btn").setAttribute("aria-label", `Focus on ${Task.title}`);
 	TaskCard.querySelector(".task-title-edit").setAttribute("aria-label", `Edit task: ${Task.title}`);
 	render_task_completion(Task);
 	TaskCard.querySelector(".task-title-edit").addEventListener("click", () => open_task_popup(Task));
