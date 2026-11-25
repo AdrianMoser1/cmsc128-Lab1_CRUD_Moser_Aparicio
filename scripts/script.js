@@ -36,7 +36,7 @@ if (Session) {
 		}
 	});
 
-	setup_add_task();
+	setup_add_task(load_tasks);
 	setup_task_view();
 	setup_bulk_actions();
 	setup_focus_timer(User.id);
